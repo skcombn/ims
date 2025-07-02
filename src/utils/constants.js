@@ -1,2 +1,2 @@
 export const branch = '';
-export const user_localstorage_key = 'ims_user';
+export const user_localstorage_key = 'imsp_user';

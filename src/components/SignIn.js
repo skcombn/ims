@@ -26,8 +26,9 @@ import useLocalStorageState from 'use-local-storage-state';
 import { user_localstorage_key } from '../utils/constants';
 
 const SignIn = () => {
-  const [localstate, setLocalState, { removeItem }] = useLocalStorageState(
-    user_localstorage_key
+  const [localstate, setLocalState] = useLocalStorageState(
+    user_localstorage_key,
+    { defaultValue: {} }
   );
   const { users, setUserId } = useUsers();
   const updateUser = useUpdateUser();
