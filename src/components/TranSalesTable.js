@@ -1,16 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import currency from 'currency.js';
-import { formatNumber, formatCurrency } from '../helpers/utils';
-import {
-  Box,
-  Flex,
-  Heading,
-  IconButton,
-  VStack,
-  HStack,
-  useDisclosure,
-} from '@chakra-ui/react';
-import { Modal, Tabs } from '@mantine/core';
+import { useState, useMemo } from 'react';
+import { formatCurrency } from '../helpers/utils';
+import { Box, Flex, Heading, VStack, useDisclosure } from '@chakra-ui/react';
+import { Tabs } from '@mantine/core';
 import { useRecoilState } from 'recoil';
 import {
   tranState,
@@ -19,19 +10,13 @@ import {
   transerialState,
   editTranIdState,
   editTranDetlsIdState,
-  editTranLotsIdState,
-  editTranSerialIdState,
 } from '../data/atomdata';
-import { formatPrice } from '../helpers/utils';
 import { Toast } from '../helpers/CustomToastify';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { AlertDialogBox } from '../helpers/AlertDialogBox';
-//import { AiFillEdit, AiFillDelete, AiOutlinePlus } from 'react-icons/ai';
-import { EditIcon, DeleteIcon, AddIcon } from '@chakra-ui/icons';
 import { useTrans } from '../react-query/trans/useTrans';
 import { useAddTran } from '../react-query/trans/useAddTran';
-import { useDeleteTran } from '../react-query/trans/useDeleteTran';
 import { useUpdateTran } from '../react-query/trans/useUpdateTran';
 import { useTransDetls } from '../react-query/transdetls/useTranDetls';
 import { useUpdateTranDetls } from '../react-query/transdetls/useUpdateTranDetls';
@@ -39,17 +24,12 @@ import { useTranLots } from '../react-query/translots/useTranLots';
 import { useUpdateTranLot } from '../react-query/translots/useUpdateTranLot';
 import { useTranSerial } from '../react-query/transserial/useTranSerial';
 import { useUpdateTranSerial } from '../react-query/transserial/useUpdateTranSerial';
-import { useItemsHistory } from '../react-query/itemshistory/useItemsHistory';
-import { useDeleteItemsHistory } from '../react-query/itemshistory/useDeteteItemsHistory';
-import { useItemsExpiry } from '../react-query/itemsexpiry/useItemsExpiry';
-import { useDeleteItemExpiry } from '../react-query/itemsexpiry/useDeleteItemExpiry';
 import { useAddAuditlog } from '../react-query/auditlog/useAddAuditlog';
 import GetLocalUser from '../helpers/GetLocalUser';
 import CustomReactTable from '../helpers/CustomReactTable';
 import Export2Excel from '../helpers/Export2Excel';
 import Export2PDF from '../helpers/Export2PDF';
 import Export2CSV from '../helpers/Export2CSV';
-//import TranForm from "./TranForm";
 
 const initial_tran = {
   t_no: '',
@@ -87,25 +67,10 @@ const initial_tran = {
   t_dodate: dayjs().format('YYYY-MM-DD'),
 };
 
-const initial_expiry = {
-  ie_itemno: '',
-  ie_lotno: '',
-  ie_datereceived: null,
-  ie_location: '',
-  ie_dateexpiry: null,
-  ie_pono: 0,
-  ie_podate: 0,
-  ie_qtyonhand: 0,
-  ie_qtyreceived: 1,
-  ie_ucost: '',
-  ie_post: '0',
-};
-
 const TranSalesTable = () => {
   const navigate = useNavigate();
   const { transactions, setTranno } = useTrans();
   const addTran = useAddTran();
-  const deleteTran = useDeleteTran();
   const updateTran = useUpdateTran();
   const { transdetls, setTranNo } = useTransDetls();
   const { translots, setLotTranNo } = useTranLots();
@@ -114,12 +79,7 @@ const TranSalesTable = () => {
   const updateTranLot = useUpdateTranLot();
   const updateTranSerial = useUpdateTranSerial();
 
-  const { itemshistory, setItemhistItemno } = useItemsHistory();
-  const deleteItemsHistory = useDeleteItemsHistory();
-
   const [state, setState] = useState({});
-  const [statustype, setStatusType] = useState('');
-  const [filterText, setFilterText] = React.useState('');
   const [invoice, setInvoice] = useRecoilState(tranState);
   const [invoicedetls, setInvoicedetls] = useRecoilState(trandetlsState);
   const [invoicelots, setInvoicelots] = useRecoilState(tranlotsState);
@@ -127,11 +87,6 @@ const TranSalesTable = () => {
   const [editInvoiceId, setEditInvoiceId] = useRecoilState(editTranIdState);
   const [editInvoicedetlsId, setEditInvoicedetlsId] =
     useRecoilState(editTranDetlsIdState);
-  const [editInvoicelotsId, setEditInvoicelotsId] =
-    useRecoilState(editTranLotsIdState);
-  const [editInvoiceserialId, setEditInvoiceserialId] = useRecoilState(
-    editTranSerialIdState
-  );
   const addAuditlog = useAddAuditlog();
   const localuser = GetLocalUser();
   const [activeTab, setActiveTab] = useState('open');
@@ -140,12 +95,6 @@ const TranSalesTable = () => {
     isOpen: isAlertDeleteOpen,
     onOpen: onAlertDeleteOpen,
     onClose: onAlertDeleteClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isTranOpen,
-    onOpen: onTranOpen,
-    onClose: onTranClose,
   } = useDisclosure();
 
   const title = `Sales Table`;
@@ -235,15 +184,6 @@ const TranSalesTable = () => {
         },
       },
 
-      /*    {
-      id: 10,
-      name: 'Amount',
-      selector: row => row.t_nettotal,
-      width: '120px',
-      sortable: true,
-      right: true,
-      cell: row => <div>{currency(row.t_nettotal).format()}</div>,
-    }, */
       {
         header: 'Status',
         accessorFn: row => {
@@ -271,7 +211,7 @@ const TranSalesTable = () => {
     const { id, t_no } = state;
     const updRec = { ...state, t_post: 'D' };
     updateTran(updRec);
-    //deleteTranDetls({ tl_tranno: t_no });
+
     transdetls
       .filter(r => r.tl_tranno === t_no)
       .forEach(rec => {
@@ -288,12 +228,6 @@ const TranSalesTable = () => {
         updateTranSerial({ ...rec, ts_post: 'D' });
       });
 
-    //delete ItemsHistory
-    /*  itemshistory
-      .filter(r => r.it_transno === t_no)
-      .forEach(rec => {
-        deleteItemsHistory(rec.tl_id);
-      }); */
     //add to auditlog
     const auditdata = {
       al_userid: localuser.userid,
@@ -353,15 +287,6 @@ const TranSalesTable = () => {
     }
   };
 
-  const add_Tran = data => {
-    addTran(data);
-  };
-
-  const update_Tran = data => {
-    updateTran(data);
-    onTranClose();
-  };
-
   const handleExportExcel = rows => {
     // add auditlog
     const auditdata = {
@@ -417,7 +342,7 @@ const TranSalesTable = () => {
     };
     addAuditlog(auditdata);
     // export csv
-    const tableHeaders = columns.map(c => c.header);
+    //const tableHeaders = columns.map(c => c.header);
     //const rowData = rows.map(row => row.original);
     const rowData = rows.map(row => [
       row.original.t_no,

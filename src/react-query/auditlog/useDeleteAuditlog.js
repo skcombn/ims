@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { queryKeys } from '../constants';
-import { Toast } from '../../helpers/CustomToastify';
+//import { items_url } from '../../utils/constants';
+//import { useCustomToast } from '../../helpers/useCustomToast';
 import { GraphQLClient, gql } from 'graphql-request';
+import { Toast } from '../../helpers/CustomToastify';
 
-//const API_URL = `http://localhost:4000/graphql`;
 const API_URL = process.env.REACT_APP_API_URL;
 
 const graphQLClient = new GraphQLClient(API_URL, {
@@ -15,9 +15,9 @@ const graphQLClient = new GraphQLClient(API_URL, {
 async function deleteAuditlog(data) {
   const { itemdata } = await graphQLClient.request(
     gql`
-      mutation DeleteAuditlog($at_id: ID) {
-        deleteAuditlog(at_id: $at_id) {
-          at_id
+      mutation DeleteAuditlog($al_id: ID) {
+        deleteAuditlog(al_id: $al_id) {
+          al_id
         }
       }
     `,
@@ -25,8 +25,10 @@ async function deleteAuditlog(data) {
   );
   return itemdata;
 }
+
 export function useDeleteAuditlog(data) {
   const queryClient = useQueryClient();
+  //const toast = useCustomToast();
 
   const { mutate } = useMutation({
     mutationFn: data => deleteAuditlog(data),
@@ -34,14 +36,14 @@ export function useDeleteAuditlog(data) {
       Toast({
         title: 'Auditlog being deleted!',
         status: 'warning',
-        customId: 'auditdel',
+        customId: 'auditDel',
       });
     },
     onError: () => {
       Toast({
-        title: 'Auditlog Delete Error!',
+        title: 'Auditlog Delete Error! Please check your internet connection!',
         status: 'warning',
-        customId: 'auditdelErr',
+        customId: 'auditDelErr',
       });
     },
     onSettled: () => {

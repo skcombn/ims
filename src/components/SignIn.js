@@ -1,14 +1,10 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 import {
   Box,
   Button,
-  Checkbox,
   Container,
-  Divider,
   FormControl,
-  FormLabel,
   Heading,
-  HStack,
   Input,
   Stack,
   VStack,
@@ -20,23 +16,16 @@ import {
   TabPanel,
   useBreakpointValue,
   useColorModeValue,
-} from "@chakra-ui/react";
-import React, { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { Toast } from "../helpers/CustomToastify";
-import { useUsers } from "../react-query/users/useUsers";
-import { useUpdateUser } from "../react-query/users/useUpdateUser";
-import { useAddAuditlog } from "../react-query/auditlog/useAddAuditlog";
-import useLocalStorageState from "use-local-storage-state";
-import { user_localstorage_key } from "../utils/constants";
-import ReactEncrypt from "react-encrypt";
-
-const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
-const secretPass = "XkhZG4fW2t2W";
+} from '@chakra-ui/react';
+import { Controller, useForm } from 'react-hook-form';
+import { Toast } from '../helpers/CustomToastify';
+import { useUsers } from '../react-query/users/useUsers';
+import { useUpdateUser } from '../react-query/users/useUpdateUser';
+import { useAddAuditlog } from '../react-query/auditlog/useAddAuditlog';
+import useLocalStorageState from 'use-local-storage-state';
+import { user_localstorage_key } from '../utils/constants';
 
 const SignIn = () => {
-  const [encrptedData, setEncrptedData] = useState("");
-  const [decrptedData, setDecrptedData] = useState("");
   const [localstate, setLocalState, { removeItem }] = useLocalStorageState(
     user_localstorage_key
   );
@@ -46,25 +35,12 @@ const SignIn = () => {
 
   const {
     handleSubmit,
-    register,
     control,
-    reset,
-    setValue,
-    getValues,
-    formState: { errors, isSubmitting, id },
+    formState: {},
   } = useForm();
 
-  const encryptData = (text) => {
-    const encryptedText = ReactEncrypt.encrypt(text);
-
-    setEncrptedData(encryptedText);
-    console.log("enctext", encryptedText);
-  };
-
-  const decryptData = (text) => {};
-
-  const handleSignIn = (data) => {
-    const user = users && users.filter((r) => r.u_userid === data.userid);
+  const handleSignIn = data => {
+    const user = users && users.filter(r => r.u_userid === data.userid);
 
     if (user && user.length > 0) {
       const { u_password, u_name } = user[0];
@@ -74,19 +50,19 @@ const SignIn = () => {
         const auditdata = {
           al_userid: data.userid,
           al_user: data.name,
-          al_date: dayjs().format("YYYY-MM-DD"),
-          al_time: dayjs().format("HHmmss"),
-          al_timestr: dayjs().format("HH:mm:ss"),
-          al_module: "Sign In",
-          al_action: "Log in",
-          al_record: "",
-          al_remark: "Invalid password",
+          al_date: dayjs().format('YYYY-MM-DD'),
+          al_time: dayjs().format('HHmmss'),
+          al_timestr: dayjs().format('HH:mm:ss'),
+          al_module: 'Sign In',
+          al_action: 'Log in',
+          al_record: '',
+          al_remark: 'Invalid password',
         };
         addAuditlog(auditdata);
 
         Toast({
-          title: "Invalid UserId / Password",
-          status: "warning",
+          title: 'Invalid UserId / Password',
+          status: 'warning',
         });
       } else {
         setLocalState({ userid: data.userid, name: u_name });
@@ -94,40 +70,40 @@ const SignIn = () => {
         const auditdata = {
           al_userid: data.userid,
           al_user: u_name,
-          al_date: dayjs().format("YYYY-MM-DD"),
-          al_time: dayjs().format("HHmmss"),
-          al_timestr: dayjs().format("HH:mm:ss"),
-          al_module: "Sign In",
-          al_action: "Log in",
-          al_record: "",
-          al_remark: "Successful",
+          al_date: dayjs().format('YYYY-MM-DD'),
+          al_time: dayjs().format('HHmmss'),
+          al_timestr: dayjs().format('HH:mm:ss'),
+          al_module: 'Sign In',
+          al_action: 'Log in',
+          al_record: '',
+          al_remark: 'Successful',
         };
         addAuditlog(auditdata);
       }
     } else {
       Toast({
-        title: "Invalid UserId",
-        status: "warning",
+        title: 'Invalid UserId',
+        status: 'warning',
       });
       //add to auditlog
       const auditdata = {
         al_userid: data.userid,
         al_user: data.name,
-        al_date: dayjs().format("YYYY-MM-DD"),
-        al_time: dayjs().format("HHmmss"),
-        al_timestr: dayjs().format("HH:mm:ss"),
-        al_module: "Sign In",
-        al_action: "Log in",
-        al_record: "",
-        al_remark: "Invalid user id",
+        al_date: dayjs().format('YYYY-MM-DD'),
+        al_time: dayjs().format('HHmmss'),
+        al_timestr: dayjs().format('HH:mm:ss'),
+        al_module: 'Sign In',
+        al_action: 'Log in',
+        al_record: '',
+        al_remark: 'Invalid user id',
       };
       addAuditlog(auditdata);
     }
   };
 
-  const handleChangePW = (data) => {
+  const handleChangePW = data => {
     const { userid, userid2, currpw, newpw, newpwconfirm } = data;
-    const user = users.filter((r) => r.u_userid === userid2);
+    const user = users.filter(r => r.u_userid === userid2);
 
     if (user.length > 0) {
       if (currpw === user[0].u_password) {
@@ -138,20 +114,20 @@ const SignIn = () => {
           updateUser({ id, ...updRec });
         } else {
           Toast({
-            title: "Invalid new password / confirm password",
-            status: "warning",
+            title: 'Invalid new password / confirm password',
+            status: 'warning',
           });
         }
       } else {
         Toast({
-          title: "Invalid UserId / Password",
-          status: "warning",
+          title: 'Invalid UserId / Password',
+          status: 'warning',
         });
       }
     } else {
       Toast({
-        title: "Invalid UserId / Password",
-        status: "warning",
+        title: 'Invalid UserId / Password',
+        status: 'warning',
       });
     }
   };
@@ -160,19 +136,19 @@ const SignIn = () => {
     <Container
       mt={16}
       maxW="lg"
-      py={{ base: "12", md: "20" }}
-      px={{ base: "0", sm: "8" }}
+      py={{ base: '12', md: '20' }}
+      px={{ base: '0', sm: '8' }}
       border="1px solid teal"
-      boxShadow={{ base: "none", sm: useColorModeValue("md", "md-dark") }}
-      borderRadius={{ base: "none", sm: "xl" }}
+      boxShadow={{ base: 'none', sm: useColorModeValue('md', 'md-dark') }}
+      borderRadius={{ base: 'none', sm: 'xl' }}
       bg="olive.50"
     >
       <Stack spacing="8">
         <Stack spacing="6">
           {/* <Logo /> */}
-          <Stack spacing={{ base: "2", md: "3" }} textAlign="center">
+          <Stack spacing={{ base: '2', md: '3' }} textAlign="center">
             <Heading
-              size={useBreakpointValue({ base: "xs", md: "md" })}
+              size={useBreakpointValue({ base: 'xs', md: 'md' })}
               color="teal"
               letterSpacing={1}
               pb="5"
@@ -181,24 +157,16 @@ const SignIn = () => {
             >
               INVENTORY MANAGEMENT SYSTEM
             </Heading>
-            <Heading size={useBreakpointValue({ base: "xs", md: "md" })}>
+            <Heading size={useBreakpointValue({ base: 'xs', md: 'md' })}>
               User Log in
             </Heading>
-            {/* <HStack spacing="1" justify="center">
-            <Text color="muted">Don't have an account?</Text>
-            <Button variant="link" colorScheme="blue">
-            Sign up
-            </Button>
-          </HStack> */}
           </Stack>
         </Stack>
         <Box
-          py={{ base: "0", sm: "8" }}
-          px={{ base: "4", sm: "10" }}
-          //bg={useBreakpointValue({ base: 'transparent', sm: 'bg-surface' })}
-          //bg={useBreakpointValue({ base: "transparent", sm: "teal.50" })}
-          boxShadow={{ base: "none", sm: useColorModeValue("md", "md-dark") }}
-          borderRadius={{ base: "none", sm: "xl" }}
+          py={{ base: '0', sm: '8' }}
+          px={{ base: '4', sm: '10' }}
+          boxShadow={{ base: 'none', sm: useColorModeValue('md', 'md-dark') }}
+          borderRadius={{ base: 'none', sm: 'xl' }}
           border="1px solid"
           borderColor="teal.200"
         >
@@ -224,11 +192,10 @@ const SignIn = () => {
                               </Text>
                               <Input
                                 name="userid"
-                                value={value || ""}
+                                value={value || ''}
                                 width="full"
                                 onChange={onChange}
                                 borderColor="gray.400"
-                                //textTransform="capitalize"
                                 ref={ref}
                                 placeholder="user id"
                                 minWidth="100"
@@ -241,7 +208,6 @@ const SignIn = () => {
                         <Controller
                           control={control}
                           name="password"
-                          //defaultValue={invoice.sls_no || ''}
                           render={({ field: { onChange, value, ref } }) => (
                             <VStack align="left">
                               <Text as="b" fontSize="sm" textAlign="left">
@@ -249,12 +215,11 @@ const SignIn = () => {
                               </Text>
                               <Input
                                 name="password"
-                                value={value || ""}
+                                value={value || ''}
                                 type="password"
                                 width="full"
                                 onChange={onChange}
                                 borderColor="gray.400"
-                                //textTransform="capitalize"
                                 ref={ref}
                                 placeholder="password"
                                 minWidth="100"
@@ -267,7 +232,7 @@ const SignIn = () => {
                     <Stack spacing="6" pt={2}>
                       <Button
                         variant="solid"
-                        colorScheme={"teal"}
+                        colorScheme={'teal'}
                         onClick={handleSubmit(handleSignIn)}
                       >
                         Sign in
@@ -280,7 +245,6 @@ const SignIn = () => {
                         <Controller
                           control={control}
                           name="userid2"
-                          //defaultValue={localstate[0].user || ''}
                           render={({ field: { onChange, value, ref } }) => (
                             <VStack align="left">
                               <Text as="b" fontSize="sm" textAlign="left">
@@ -288,11 +252,10 @@ const SignIn = () => {
                               </Text>
                               <Input
                                 name="userid2"
-                                value={value || ""}
+                                value={value || ''}
                                 width="full"
                                 onChange={onChange}
                                 borderColor="gray.400"
-                                //textTransform="capitalize"
                                 ref={ref}
                                 placeholder="user id"
                                 minWidth="100"
@@ -305,7 +268,6 @@ const SignIn = () => {
                         <Controller
                           control={control}
                           name="currpw"
-                          //defaultValue={localstate[0].user || ''}
                           render={({ field: { onChange, value, ref } }) => (
                             <VStack align="left">
                               <Text as="b" fontSize="sm" textAlign="left">
@@ -313,11 +275,10 @@ const SignIn = () => {
                               </Text>
                               <Input
                                 name="currpw"
-                                value={value || ""}
+                                value={value || ''}
                                 width="full"
                                 onChange={onChange}
                                 borderColor="gray.400"
-                                //textTransform="capitalize"
                                 ref={ref}
                                 placeholder="current pw"
                                 minWidth="100"
@@ -330,7 +291,6 @@ const SignIn = () => {
                         <Controller
                           control={control}
                           name="newpw"
-                          //defaultValue={invoice.sls_no || ''}
                           render={({ field: { onChange, value, ref } }) => (
                             <VStack align="left">
                               <Text as="b" fontSize="sm" textAlign="left">
@@ -338,12 +298,11 @@ const SignIn = () => {
                               </Text>
                               <Input
                                 name="newpw"
-                                value={value || ""}
+                                value={value || ''}
                                 type="password"
                                 width="full"
                                 onChange={onChange}
                                 borderColor="gray.400"
-                                //textTransform="capitalize"
                                 ref={ref}
                                 placeholder="new password"
                                 minWidth="100"
@@ -356,7 +315,6 @@ const SignIn = () => {
                         <Controller
                           control={control}
                           name="newpwconfirm"
-                          //defaultValue={invoice.sls_no || ''}
                           render={({ field: { onChange, value, ref } }) => (
                             <VStack align="left">
                               <Text as="b" fontSize="sm" textAlign="left">
@@ -364,12 +322,11 @@ const SignIn = () => {
                               </Text>
                               <Input
                                 name="newpwconfirm"
-                                value={value || ""}
+                                value={value || ''}
                                 type="password"
                                 width="full"
                                 onChange={onChange}
                                 borderColor="gray.400"
-                                //textTransform="capitalize"
                                 ref={ref}
                                 placeholder="password"
                                 minWidth="100"
@@ -383,7 +340,7 @@ const SignIn = () => {
                       <Button
                         variant="solid"
                         size="md"
-                        colorScheme={"teal"}
+                        colorScheme={'teal'}
                         onClick={handleSubmit(handleChangePW)}
                       >
                         Update Password

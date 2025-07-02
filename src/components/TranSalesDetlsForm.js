@@ -1,26 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useIsFetching } from '@tanstack/react-query';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { Controller, useForm } from 'react-hook-form';
 import { nanoid } from 'nanoid';
-import { formatPrice } from '../helpers/utils';
-import { FiSave } from 'react-icons/fi';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { ImExit } from 'react-icons/im';
 import { useNavigate } from 'react-router-dom';
 import {
-  AspectRatio,
   Box,
   Button,
   ButtonGroup,
-  Center,
-  Container,
   Divider,
   Flex,
   FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   Grid,
   GridItem,
   Heading,
@@ -30,49 +21,21 @@ import {
   Input,
   InputGroup,
   InputLeftAddon,
-  InputLeftElement,
-  Radio,
-  RadioGroup,
-  Select,
-  SimpleGrid,
-  Stack,
-  StackDivider,
-  //Text,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
   VStack,
-  Wrap,
-  WrapItem,
-  useRadio,
-  useRadioGroup,
   useDisclosure,
-  useColorMode,
-  useColorModeValue,
-  useBreakpointValue,
 } from '@chakra-ui/react';
-import { Modal, NumberInput, ActionIcon, Text, Tooltip } from '@mantine/core';
+import { Modal, NumberInput, ActionIcon, Tooltip } from '@mantine/core';
 import { IconDoorExit, IconSend } from '@tabler/icons-react';
-import {
-  IconEdit,
-  IconTrash,
-  IconSquareRoundedPlus,
-  IconPlus,
-} from '@tabler/icons-react';
+import { IconEdit } from '@tabler/icons-react';
 import { useItemsExpiry } from '../react-query/itemsexpiry/useItemsExpiry';
 import { useItemsSerial } from '../react-query/itemsserial/useItemsSerial';
 import CustomReactTable from '../helpers/CustomReactTable';
-import CustomReactSelectTable from '../helpers/CustomReactSelectTable';
 import ItemSearchTable from './ItemSearchTable';
-import { useItems } from '../react-query/items/useItems';
 import { useRecoilState } from 'recoil';
 import {
   editTranIdState,
   editTranDetlsIdState,
   editTranLotsIdState,
-  editTranSerialIdState,
 } from '../data/atomdata';
 import TranSalesLotForm from './TranSalesLotForm';
 
@@ -83,7 +46,6 @@ const TranSalesDetlsForm = ({
   setLotState,
   serialstate,
   setSerialState,
-  //statustype,
   add_Item,
   update_Item,
   onItemClose,
@@ -91,25 +53,19 @@ const TranSalesDetlsForm = ({
   update_LotItem,
 }) => {
   const isFetching = useIsFetching();
-  const navigate = useNavigate();
   const field_width = '150';
   const field_gap = '3';
   const { itemsexpiry, setItemExpId } = useItemsExpiry();
   const { itemsserial, setItemSerialId } = useItemsSerial();
-  const [editBatchId, setEditBatchId] = useRecoilState(editTranIdState);
+
   const [editBatchdetlsId, setEditBatchdetlsId] =
     useRecoilState(editTranDetlsIdState);
-  const [editBatchlotsId, setEditBatchlotsId] =
-    useRecoilState(editTranLotsIdState);
+
   const [batchlotform, setBatchLotForm] = useState();
   const [qty, setQty] = useState(state.tl_qty);
   const [uprice, setUPrice] = useState(state.tl_uprice);
   const [isexpirydate, setIsExpiryDate] = useState(state.tl_trackexpiry);
   const [trackserial, setTrackSerial] = useState(state.tl_trackserial);
-
-  console.log('detlsform detlsstate', state);
-  console.log('detlsform lotsstate', lotstate);
-  console.log('detlsform serialsstate', serialstate);
 
   const {
     isOpen: isSearchOpen,
@@ -125,11 +81,9 @@ const TranSalesDetlsForm = ({
 
   const {
     handleSubmit,
-    register,
     control,
-    reset,
     setValue,
-    formState: { errors, isSubmitting, id },
+    formState: { isSubmitting },
   } = useForm({
     defaultValues: {
       ...state,
@@ -137,12 +91,6 @@ const TranSalesDetlsForm = ({
   });
 
   const expirycolumns = [
-    /* {
-      header: 'ID',
-      accessorKey: 'tl_id',
-      enableEditing: false,
-      enableHiding: true,
-    }, */
     {
       header: 'PO No',
       accessorKey: 'tl_pono',
@@ -190,25 +138,8 @@ const TranSalesDetlsForm = ({
     },
   ];
 
-  const serialcolumns = [
-    {
-      header: 'Serial No',
-      accessorKey: 'ts_serialno',
-      enableEditing: false,
-      size: 150,
-    },
-    {
-      header: 'PO Date',
-      accessorKey: 'ts_podate',
-      enableEditing: false,
-      size: 100,
-    },
-  ];
-
   //CREATE action
   const handleCreateItem = ({ values, exitCreatingMode }) => {
-    //console.log("create", values);
-    //handleAdd({ ...values });
     exitCreatingMode();
   };
 
@@ -220,7 +151,7 @@ const TranSalesDetlsForm = ({
         ? values.tl_qtyonhand
         : parseFloat(values.tl_qty);
     const { original } = row;
-    const { tl_id } = original;
+
     console.log('lotsave', values, original);
     const newData = [{ ...original, tl_qty: qtyvalue }];
     const oldData = lotstate.filter(r => r.tl_id !== original.tl_id);
@@ -260,28 +191,11 @@ const TranSalesDetlsForm = ({
             <IconEdit />
           </ActionIcon>
         </Tooltip>
-        {/*  <Tooltip label="Delete">
-          <ActionIcon color="red" onClick={() => openDeleteConfirmModal(row)}>
-            <IconTrash />
-          </ActionIcon>
-        </Tooltip> */}
       </Flex>
     ),
-    /*  renderTopToolbarCustomActions: ({ table }) => (
-      <ActionIcon
-        variant="outline"
-        onClick={() => {
-          table.setCreatingRow(true);
-        }}
-        color="teal"
-      >
-        <IconPlus size="40" />
-      </ActionIcon>
-    ), */
   });
 
   const onSubmit = values => {
-    //console.log('status', statustype);
     if (editBatchdetlsId.type === 'edit') {
       update_Item(values);
       update_LotItem(lotstate);
@@ -345,9 +259,9 @@ const TranSalesDetlsForm = ({
           tl_qty: 0,
         };
       });
-    console.log('lot', newLotData);
+
     const lotdata = [{ ...lotstate }, { ...newLotData }];
-    console.log('lotstate add', lotdata);
+
     setLotState([...lotstate, ...newLotData]);
     //update serial
     const newSerialData = itemsserial
@@ -366,26 +280,6 @@ const TranSalesDetlsForm = ({
     onSearchOpen();
   };
 
-  const handleEditLotForm = data => {
-    const { original } = data;
-    setBatchLotForm({ ...original });
-    onLotFormOpen();
-  };
-
-  const handleQtyCalc = () => {
-    console.log('lotstate handleqtycalc', lotstate);
-    if (isexpirydate && setLotState.length > 0) {
-      const allqty = lotstate.reduce((acc, item) => {
-        const value = isNaN(item.tl_qty) ? 0 : item.tl_qty;
-        return acc + item.tl_qty;
-      }, 0);
-
-      setValue('tl_qty', allqty);
-      setQty(allqty);
-      console.log('handleqtycalc', allqty);
-    }
-  };
-
   const handleCalc = () => {
     const amt = Math.round(qty * uprice, 2);
     setValue('tl_amount', amt);
@@ -394,10 +288,6 @@ const TranSalesDetlsForm = ({
   useEffect(() => {
     handleCalc();
   }, [qty, uprice]);
-
-  /* useEffect(() => {
-    handleQtyCalc();
-  }, [lotstate]); */
 
   return (
     <Flex
@@ -518,7 +408,6 @@ const TranSalesDetlsForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="item description"
                           minWidth="200"
@@ -548,7 +437,6 @@ const TranSalesDetlsForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="item packing"
                           minWidth="500"
@@ -588,10 +476,7 @@ const TranSalesDetlsForm = ({
                             onChange(e);
                             setQty(prev => (prev = e));
                           }}
-                          //borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
-                          //placeholder="qty"
                           readOnly={isexpirydate}
                         />
                       </HStack>
@@ -619,7 +504,6 @@ const TranSalesDetlsForm = ({
                           width="35%"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="unit"
                         />
@@ -646,7 +530,6 @@ const TranSalesDetlsForm = ({
                           name="tl_uprice"
                           value={value || 0}
                           precision={2}
-                          //fixedDecimalScale
                           parser={value => value.replace(/\$\s?|(,*)/g, '')}
                           formatter={value =>
                             !Number.isNaN(parseFloat(value))
@@ -661,10 +544,7 @@ const TranSalesDetlsForm = ({
                             onChange(e);
                             setUPrice(prev => (prev = e));
                           }}
-                          //borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
-                          //placeholder="unit cost"
                         />
                       </HStack>
                     </InputGroup>
@@ -689,7 +569,6 @@ const TranSalesDetlsForm = ({
                           name="tl_amount"
                           value={value || 0}
                           precision={2}
-                          //fixedDecimalScale
                           parser={value => value.replace(/\$\s?|(,*)/g, '')}
                           formatter={value =>
                             !Number.isNaN(parseFloat(value))
@@ -701,10 +580,7 @@ const TranSalesDetlsForm = ({
                           }
                           width="full"
                           onChange={onChange}
-                          //borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
-                          //placeholder="amount"
                         />
                       </HStack>
                     </InputGroup>
@@ -731,7 +607,6 @@ const TranSalesDetlsForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="remark"
                         />
@@ -744,45 +619,7 @@ const TranSalesDetlsForm = ({
             {isexpirydate && (
               <>
                 <GridItem colSpan={6}>
-                  {/* <CustomReactTable
-                    title="Expiry Lots Table"
-                    data={lotstate}
-                    columns={expirycolumns}
-                    initialState={{
-                      columnVisibility: {},
-                      sorting: [{ id: 'tl_dateexpiry', desc: false }],
-                      density: 'xs',
-                    }}
-                    //disableRowActionStatus={true}
-                    disableExportStatus={true}
-                    disableAddStatus={true}
-                    //disableUpdateStatus={false}
-                    disableDeleteStatus={true}
-                    handleEdit={handleEditLotForm}
-                  /> */}
                   <MantineReactTable table={table} />
-                </GridItem>
-              </>
-            )}
-            {trackserial && (
-              <>
-                <GridItem colSpan={6}>
-                  <CustomReactTable
-                    title="Serial No Table"
-                    data={serialstate}
-                    columns={serialcolumns}
-                    initialState={{
-                      columnVisibility: {},
-                      sorting: [{ id: 'ts_serialno', desc: false }],
-                      density: 'xs',
-                    }}
-                    //disableRowActionStatus={true}
-                    disableExportStatus={true}
-                    disableAddStatus={true}
-                    //disableUpdateStatus={false}
-                    disableDeleteStatus={true}
-                    //handleEdit={handleEditLotForm}
-                  />
                 </GridItem>
               </>
             )}
@@ -793,10 +630,7 @@ const TranSalesDetlsForm = ({
         <ItemSearchTable
           state={state}
           setState={setState}
-          //add_Item={add_InvDetls}
           update_Item={update_ItemDetls}
-          //statustype={statustype}
-          //setStatusType={setStatusType}
           onItemSearchClose={onSearchClose}
         />
       </Modal>
@@ -804,10 +638,7 @@ const TranSalesDetlsForm = ({
         <TranSalesLotForm
           state={batchlotform}
           setState={setBatchLotForm}
-          //add_Item={add_InvDetls}
           update_Item={update_ItemDetls}
-          //statustype={statustype}
-          //setStatusType={setStatusType}
           onFormClose={onLotFormClose}
         />
       </Modal>

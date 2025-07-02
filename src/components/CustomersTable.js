@@ -1,21 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import {
-  Box,
-  Flex,
-  Heading,
-  IconButton,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  //ModalHeader,
-  //ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { useState, useMemo } from 'react';
+import { Box, Flex, Heading, useDisclosure } from '@chakra-ui/react';
+import { Modal } from '@mantine/core';
 import dayjs from 'dayjs';
-import { formatNumber, formatCurrency } from '../helpers/utils';
-import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
 import { AlertDialogBox } from '../helpers/AlertDialogBox';
 import { useCustomers } from '../react-query/customers/useCustomers';
 import { useAddCustomer } from '../react-query/customers/useAddCustomer';
@@ -58,13 +44,6 @@ const CustomersTable = () => {
   const localuser = GetLocalUser();
   const [state, setState] = useState({});
   const [statustype, setStatusType] = useState('');
-  const [filterText, setFilterText] = useState('');
-
-  const filteredData = customers.filter(
-    item =>
-      item.c_cust &&
-      item.c_cust.toLowerCase().includes(filterText.toLowerCase())
-  );
 
   const {
     isOpen: isAlertDeleteOpen,
@@ -237,7 +216,7 @@ const CustomersTable = () => {
       al_remark: 'Successful',
     };
     addAuditlog(auditdata);
-    const tableHeaders = columns.map(c => c.header);
+    //const tableHeaders = columns.map(c => c.header);
     //const rowData = rows.map(row => row.original);
     const rowData = rows.map(row => [
       row.original.c_custno,
@@ -306,33 +285,15 @@ const CustomersTable = () => {
           handleExportExcel={handleExportExcel}
         />
       </Box>
-      <Modal
-        closeOnOverlayClick={false}
-        isOpen={isCustOpen}
-        onClose={onCustClose}
-        size="4xl"
-      >
-        <ModalOverlay />
-        <ModalContent>
-          {/* <ModalHeader>Product Form</ModalHeader> */}
-          <ModalCloseButton />
-          <ModalBody>
-            <CustomerForm
-              state={state}
-              setState={setState}
-              add_Cust={add_Cust}
-              update_Cust={update_Cust}
-              statustype={statustype}
-              onCustClose={onCustClose}
-            />
-          </ModalBody>
-
-          {/* <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onProductClose}>
-              Close
-              </Button>
-          </ModalFooter> */}
-        </ModalContent>
+      <Modal opened={isCustOpen} onClose={onCustClose} size="4xl">
+        <CustomerForm
+          state={state}
+          setState={setState}
+          add_Cust={add_Cust}
+          update_Cust={update_Cust}
+          statustype={statustype}
+          onCustClose={onCustClose}
+        />
       </Modal>
       <AlertDialogBox
         onClose={onAlertDeleteClose}

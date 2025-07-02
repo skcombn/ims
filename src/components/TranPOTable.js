@@ -1,15 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { formatNumber, formatCurrency } from '../helpers/utils';
-import {
-  Box,
-  Flex,
-  Heading,
-  HStack,
-  VStack,
-  IconButton,
-  useDisclosure,
-} from '@chakra-ui/react';
-import { Grid, Modal, Tabs } from '@mantine/core';
+import { Box, Flex, Heading, VStack, useDisclosure } from '@chakra-ui/react';
+import { Tabs } from '@mantine/core';
 import { useRecoilState } from 'recoil';
 import {
   tranState,
@@ -21,13 +13,10 @@ import {
   editTranLotsIdState,
   editTranSerialIdState,
 } from '../data/atomdata';
-import { formatPrice } from '../helpers/utils';
 import { Toast } from '../helpers/CustomToastify';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { AlertDialogBox } from '../helpers/AlertDialogBox';
-//import { AiFillEdit, AiFillDelete, AiOutlinePlus } from 'react-icons/ai';
-import { EditIcon, DeleteIcon, AddIcon } from '@chakra-ui/icons';
 import { useTrans } from '../react-query/trans/useTrans';
 import { useAddTran } from '../react-query/trans/useAddTran';
 import { useDeleteTran } from '../react-query/trans/useDeleteTran';
@@ -40,8 +29,6 @@ import { useTranSerial } from '../react-query/transserial/useTranSerial';
 import { useUpdateTranSerial } from '../react-query/transserial/useUpdateTranSerial';
 import { useItemsHistory } from '../react-query/itemshistory/useItemsHistory';
 import { useDeleteItemsHistory } from '../react-query/itemshistory/useDeteteItemsHistory';
-import { useItemsExpiry } from '../react-query/itemsexpiry/useItemsExpiry';
-import { useUpdateItemExpiry } from '../react-query/itemsexpiry/useUpdateItemExpiry';
 import { useAddAuditlog } from '../react-query/auditlog/useAddAuditlog';
 import GetLocalUser from '../helpers/GetLocalUser';
 import CustomReactTable from '../helpers/CustomReactTable';
@@ -85,20 +72,6 @@ const initial_tran = {
   t_dodate: dayjs().format('YYYY-MM-DD'),
 };
 
-const initial_expiry = {
-  ie_itemno: '',
-  ie_lotno: '',
-  ie_datereceived: null,
-  ie_location: '',
-  ie_dateexpiry: null,
-  ie_pono: 0,
-  ie_podate: 0,
-  ie_qtyonhand: 0,
-  ie_qtyreceived: 1,
-  ie_ucost: '',
-  ie_post: '0',
-};
-
 const TranPOTable = () => {
   const navigate = useNavigate();
   const { transactions, setTranno } = useTrans();
@@ -112,12 +85,8 @@ const TranPOTable = () => {
   const updateTranLot = useUpdateTranLot();
   const updateTranSerial = useUpdateTranSerial();
 
-  const { itemshistory, setItemhistItemno } = useItemsHistory();
-  const deleteItemsHistory = useDeleteItemsHistory();
-
   const [state, setState] = useState({});
-  const [statustype, setStatusType] = useState('');
-  const [filterText, setFilterText] = React.useState('');
+
   const [invoice, setInvoice] = useRecoilState(tranState);
   const [invoicedetls, setInvoicedetls] = useRecoilState(trandetlsState);
   const [invoicelots, setInvoicelots] = useRecoilState(tranlotsState);
@@ -125,11 +94,7 @@ const TranPOTable = () => {
   const [editInvoiceId, setEditInvoiceId] = useRecoilState(editTranIdState);
   const [editInvoicedetlsId, setEditInvoicedetlsId] =
     useRecoilState(editTranDetlsIdState);
-  const [editInvoicelotsId, setEditInvoicelotsId] =
-    useRecoilState(editTranLotsIdState);
-  const [editInvoiceserialId, setEditInvoiceserialId] = useRecoilState(
-    editTranSerialIdState
-  );
+
   const addAuditlog = useAddAuditlog();
   const localuser = GetLocalUser();
   const [activeTab, setActiveTab] = useState('open');
@@ -233,15 +198,6 @@ const TranPOTable = () => {
         },
       },
 
-      /*    {
-      id: 10,
-      name: 'Amount',
-      selector: row => row.t_nettotal,
-      width: '120px',
-      sortable: true,
-      right: true,
-      cell: row => <div>{currency(row.t_nettotal).format()}</div>,
-    }, */
       {
         header: 'Status',
         accessorFn: row => {
@@ -286,12 +242,6 @@ const TranPOTable = () => {
         updateTranSerial({ ...rec, ts_post: 'D' });
       });
 
-    //delete ItemsHistory
-    /*itemshistory
-      .filter(r => r.it_transno === t_no)
-      .forEach(rec => {
-        deleteItemsHistory(rec.tl_id);
-      }); */
     //add to auditlog
     const auditdata = {
       al_userid: localuser.userid,
@@ -351,15 +301,6 @@ const TranPOTable = () => {
       setState(prev => (prev = { ...original }));
       onAlertDeleteOpen();
     }
-  };
-
-  const add_Tran = data => {
-    addTran(data);
-  };
-
-  const update_Tran = data => {
-    updateTran(data);
-    onTranClose();
   };
 
   const handleExportExcel = rows => {

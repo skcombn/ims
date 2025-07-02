@@ -1,47 +1,16 @@
 import React, { useState } from 'react';
-import {
-  Button,
-  Card,
-  Center,
-  Flex,
-  HStack,
-  VStack,
-  Text,
-  Icon,
-  IconButton,
-  Divider,
-  Avatar,
-  Heading,
-  Menu,
-  MenuItem,
-  MenuButton,
-  MenuList,
-  MenuItemOption,
-  MenuOptionGroup,
-  useDisclosure,
-  textDecoration,
-} from '@chakra-ui/react';
-import {
-  FiMenu,
-  FiHome,
-  FiCalendar,
-  FiUser,
-  FiDollarSign,
-  FiBriefcase,
-  FiSettings,
-} from 'react-icons/fi';
+import { Flex, IconButton, Heading, Menu, MenuItem } from '@chakra-ui/react';
+
 import {
   IconClipboardList,
   IconChartArrowsVertical,
   IconChartBar,
-  IconFileInvoice,
 } from '@tabler/icons-react';
 import { Group } from '@mantine/core';
-import { ImTextColor } from 'react-icons/im';
 
 export default function DashboardSidebar({ setSelect }) {
   const menu_top = '5';
-  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const [navSize, changeNavSize] = useState('large');
 
   return (
@@ -64,17 +33,6 @@ export default function DashboardSidebar({ setSelect }) {
         alignItems={navSize === 'small' ? 'center' : 'flex-start'}
         as="nav"
       >
-        {/*  <IconButton
-          background="none"
-          mt={2}
-          size="lg"
-          _hover={{ background: 'none' }}
-          icon={<FiMenu />}
-          onClick={() => {
-            if (navSize == 'small') changeNavSize('large');
-            else changeNavSize('small');
-          }}
-        /> */}
         <Menu
           isLazy
           placement="right"
@@ -85,16 +43,6 @@ export default function DashboardSidebar({ setSelect }) {
           _focus={{ boxShadow: 'outline', bg: 'teal' }}
         >
           <MenuItem pt={menu_top} onClick={() => setSelect('items')}>
-            {/* <Icon
-              as={FiCalendar}
-              fontSize="xl"
-              size={'lg'}
-              bgColor={'teal.100'}
-              //color={active ? "#82AAAD" : "gray.500"}
-              />
-              <Text ml={5} display={navSize === 'small' ? 'none' : 'flex'}>
-              Items
-              </Text> */}
             <Group>
               <IconButton onClick={() => setSelect('items')} size="lg">
                 <IconClipboardList size="50" color="teal" />

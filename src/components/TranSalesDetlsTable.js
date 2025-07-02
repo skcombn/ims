@@ -1,229 +1,95 @@
-import React, { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useMemo } from 'react';
+import { Box, Flex, IconButton, useDisclosure } from '@chakra-ui/react';
+import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
+import CustomReactTable from '../helpers/CustomReactTable';
+import { useRecoilState } from 'recoil';
 import {
-  Box,
-  Flex,
-  Heading,
-  IconButton,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  //ModalHeader,
-  //ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-} from "@chakra-ui/react";
-import { EditIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
-import { AlertDialogBox } from "../helpers/AlertDialogBox";
-import CustomReactTable from "../helpers/CustomReactTable";
-import { useRecoilState } from "recoil";
-import {
-  tranState,
-  trandetlsState,
-  tranlotsState,
   editTranIdState,
   editTranDetlsIdState,
   editTranLotsIdState,
-} from "../data/atomdata";
-import { useTransDetls } from "../react-query/transdetls/useTranDetls";
+} from '../data/atomdata';
 
 const TranSalesDetlsTable = ({
   batchdetlsstate,
-  setBatchDetlsState,
   batchlotsstate,
-  setBatchLotsState,
   handleAddBatchDetls,
   handleDeleteBatchDetls,
   handleEditBatchDetls,
-  handleAddBatchLots,
-  handleDeleteBatchLots,
-  handleEditBatchLots,
 }) => {
-  //const navigate = useNavigate();
-  //const { samplesbatchdetls, setBatchDetlsId } = useSamplesBatchDetls();
-  //const [batchdetls, setBatchDetls] = useState();
-  //const [state, setState] = useState({});
-  //const [statustype, setStatusType] = useState('');
-  const [filterText, setFilterText] = useState("");
-  const [editBatchId, setEditBatchId] = useRecoilState(editTranIdState);
-  const [editBatchdetlsId, setEditBatchdetlsId] =
-    useRecoilState(editTranDetlsIdState);
-  const [editBatchlotsId, setEditBatchlotsId] =
-    useRecoilState(editTranLotsIdState);
-  // const [singleSampleBatch, setSingleSampleBatch] = useRecoilState(
-  //   singleSampleBatchState
-  // );
-  // const [singleSampleBatchDetls, setSingleSampleBatchDetls] = useRecoilState(
-  //   singleSampleBatchDetlsState
-  // );
-
-  /* const filteredData = batchdetlsstate.filter(
-    item =>
-      item.tl_desp &&
-      item.tl_desp.toLowerCase().includes(filterText.toLowerCase())
-  ); */
-
-  console.log("detls tables detlstate", batchdetlsstate);
-  console.log("detls tables lotstate", batchlotsstate);
-
-  const {
-    isOpen: isAlertDeleteOpen,
-    onOpen: onAlertDeleteOpen,
-    onClose: onAlertDeleteClose,
-  } = useDisclosure();
-
-  const {
-    isOpen: isBatchDetlsOpen,
-    onOpen: onBatchDetlsOpen,
-    onClose: onBatchDetlsClose,
-  } = useDisclosure();
-
-  const title = "Items Details";
+  const title = 'Items Details';
 
   const columns = useMemo(
     () => [
       {
-        header: "Item No",
-        accessorFn: (row) => row.tl_itemno,
+        header: 'Item No',
+        accessorFn: row => row.tl_itemno,
         //size: 200,
         mantineTableBodyCellProps: {
-          align: "left",
+          align: 'left',
         },
       },
       {
-        header: "Description",
-        accessorFn: (row) => row.tl_desp,
+        header: 'Description',
+        accessorFn: row => row.tl_desp,
         //size: 200,
         mantineTableBodyCellProps: {
-          align: "left",
+          align: 'left',
         },
       },
       {
-        header: "Qty",
-        accessorFn: (row) => row.tl_qty || 0,
+        header: 'Qty',
+        accessorFn: row => row.tl_qty || 0,
         //size: 200,
 
         mantineTableBodyCellProps: {
-          align: "right",
+          align: 'right',
         },
       },
       {
-        header: "Unit",
-        accessorFn: (row) => row.tl_unit || "",
+        header: 'Unit',
+        accessorFn: row => row.tl_unit || '',
         //size: 200,
         mantineTableBodyCellProps: {
-          align: "left",
+          align: 'left',
         },
       },
       {
-        header: "Unit Value",
-        accessorFn: (row) => row.tl_uprice || 0,
+        header: 'Unit Value',
+        accessorFn: row => row.tl_uprice || 0,
         //size: 200,
         Cell: ({ cell }) =>
-          cell.getValue()?.toLocaleString?.("en-US", {
-            style: "currency",
-            currency: "USD",
+          cell.getValue()?.toLocaleString?.('en-US', {
+            style: 'currency',
+            currency: 'USD',
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           }),
         mantineTableBodyCellProps: {
-          align: "right",
+          align: 'right',
         },
       },
       {
-        header: "Amount",
-        accessorFn: (row) => row.tl_amount || 0,
+        header: 'Amount',
+        accessorFn: row => row.tl_amount || 0,
         //size: 200,
         Cell: ({ cell }) =>
-          cell.getValue()?.toLocaleString?.("en-US", {
-            style: "currency",
-            currency: "USD",
+          cell.getValue()?.toLocaleString?.('en-US', {
+            style: 'currency',
+            currency: 'USD',
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           }),
         mantineTableBodyCellProps: {
-          align: "right",
+          align: 'right',
         },
       },
       {
-        header: "Remark",
-        accessorFn: (row) => row.tl_remark,
+        header: 'Remark',
+        accessorFn: row => row.tl_remark,
         //size: 200,
         mantineTableBodyCellProps: {
-          align: "left",
+          align: 'left',
         },
-      },
-    ],
-    []
-  );
-
-  const columns_others = useMemo(
-    () => [
-      {
-        id: 1,
-        key: "editaction",
-        text: "Action",
-        sortable: false,
-        width: "60px",
-        cell: (record) => {
-          return (
-            <>
-              <IconButton
-                icon={<EditIcon />}
-                size="sm"
-                onClick={() => {
-                  handleEditBatchDetls(record);
-                }}
-              ></IconButton>
-            </>
-          );
-        },
-      },
-      {
-        id: 2,
-        key: "deleteaction",
-        text: "Action",
-        width: "60px",
-        sortable: false,
-        cell: (record) => {
-          return (
-            <>
-              <IconButton
-                icon={<DeleteIcon />}
-                size="sm"
-                onClick={() => {
-                  handleDeleteBatchDetls(record);
-                }}
-              />
-            </>
-          );
-        },
-      },
-
-      {
-        id: 5,
-        name: "Description",
-        selector: (row) => row.tl_desp,
-        //minWidth: '200px',
-        sortable: true,
-        filterable: true,
-        align: "left",
-        wrap: false,
-        cell: (row) => (
-          <div style={{ overflow: "hidden", textAlign: "left" }}>
-            {row.tl_desp}
-          </div>
-        ),
-      },
-
-      {
-        id: 10,
-        name: "Amount",
-        selector: (row) => row.tl_amount || 0,
-        width: "200px",
-        sortable: true,
-        filterable: true,
       },
     ],
     []

@@ -1,6 +1,4 @@
-import React from 'react';
 import {
-  Canvas,
   Text,
   View,
   Page,
@@ -12,18 +10,8 @@ import _ from 'lodash';
 import { useNavigate } from 'react-router-dom';
 import { PDFViewer } from '@react-pdf/renderer';
 import { TiArrowBack } from 'react-icons/ti';
-import invoice from '../data/invoice';
 import logo from '../assets/logo.png';
-import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  Grid,
-  GridItem,
-  HStack,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Button, Grid, GridItem, HStack, VStack } from '@chakra-ui/react';
 import { useRecoilState } from 'recoil';
 import { purchaseState, purchasedetlsState } from '../data/atomdata';
 
@@ -43,18 +31,6 @@ const InvoiceTitle = ({ title }) => {
   );
 };
 
-const InvoiceNo = ({ invoice }) => (
-  <>
-    <View style={docnostyles.invoiceNoContainer}>
-      <Text style={docnostyles.label}>Invoice No:</Text>
-      <Text style={docnostyles.invoiceDate}>{invoice.invoice_no}</Text>
-    </View>
-    <View style={docnostyles.invoiceDateContainer}>
-      <Text style={docnostyles.label}>Date: </Text>
-      <Text>{invoice.trans_date}</Text>
-    </View>
-  </>
-);
 const BillTo = ({ invoice, pageno, totalpage }) => (
   <View style={headerstyles.colContainer}>
     <View style={headerstyles.rowContainer}>
@@ -131,9 +107,6 @@ const InvoiceTableBlankSpace = ({ rowsCount }) => {
 };
 
 const InvoiceTableFooter = ({ total }) => {
-  // const total = items
-  //   .map(item => item.sld_total)
-  //   .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   return (
     <View style={tablefooterstyles.row}>
       <Text style={tablefooterstyles.description}>TOTAL</Text>
@@ -286,36 +259,6 @@ const titlestyles = StyleSheet.create({
   },
   blankfield: {
     width: '65%',
-  },
-});
-
-const docnostyles = StyleSheet.create({
-  invoiceNoContainer: {
-    flexDirection: 'row',
-    marginTop: 23,
-    justifyContent: 'flex-end',
-  },
-  invoiceDateContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  invoiceDate: {
-    fontSize: 12,
-    fontStyle: 'bold',
-  },
-  label: {
-    width: 60,
-  },
-});
-
-const billtostyles = StyleSheet.create({
-  headerContainer: {
-    marginTop: 36,
-  },
-  billTo: {
-    marginTop: 20,
-    paddingBottom: 3,
-    fontFamily: 'Helvetica-Oblique',
   },
 });
 

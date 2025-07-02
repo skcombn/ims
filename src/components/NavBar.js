@@ -1,12 +1,11 @@
-import React from "react";
-import { Box, Flex, Stack } from "@chakra-ui/react";
+import React from 'react';
+import { Box, Flex, Stack } from '@chakra-ui/react';
 
-import Logo from "./Logo";
-import NavItems from "./NavItems";
-//import AvatarBox from "./AvatarBox";
-import UserStatusBox from "./UserStatusBox";
+import Logo from './Logo';
+import NavItems from './NavItems';
+import UserStatusBox from './UserStatusBox';
 
-const NavBar = (props) => {
+const NavBar = props => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
@@ -15,7 +14,7 @@ const NavBar = (props) => {
     <NavBarContainer {...props}>
       <Logo
         w="550px"
-        color={["white", "white", "primary.500", "primary.500"]}
+        color={['white', 'white', 'primary.500', 'primary.500']}
       />
       <MenuToggle toggle={toggle} isOpen={isOpen} />
       <MenuLinks isOpen={isOpen} />
@@ -48,7 +47,7 @@ const MenuIcon = () => (
 
 const MenuToggle = ({ toggle, isOpen }) => {
   return (
-    <Box display={{ base: "block", md: "none" }} onClick={toggle}>
+    <Box display={{ base: 'block', md: 'none' }} onClick={toggle}>
       {isOpen ? <CloseIcon /> : <MenuIcon />}
     </Box>
   );
@@ -57,14 +56,14 @@ const MenuToggle = ({ toggle, isOpen }) => {
 const MenuLinks = ({ isOpen }) => {
   return (
     <Box
-      display={{ base: isOpen ? "block" : "none", md: "block" }}
-      flexBasis={{ base: "100%", md: "auto" }}
+      display={{ base: isOpen ? 'block' : 'none', md: 'block' }}
+      flexBasis={{ base: '100%', md: 'auto' }}
     >
       <Stack
         spacing={8}
         align="center"
-        justify={["center", "space-between", "flex-end", "flex-end"]}
-        direction={["column", "row", "row", "row"]}
+        justify={['center', 'space-between', 'flex-end', 'flex-end']}
+        direction={['column', 'row', 'row', 'row']}
         pt={[4, 4, 0, 0]}
         fontSize="20"
       >
@@ -82,11 +81,11 @@ const NavBarContainer = ({ children, ...props }) => {
       justify="space-between"
       wrap="wrap"
       w="100%"
-      minH={"40px"}
+      minH={'40px'}
       mb={2}
       p={8}
-      bg={["primary.500", "primary.500", "transparent", "transparent"]}
-      color={["teal", "teal", "primary.700", "primary.700"]}
+      bg={['primary.500', 'primary.500', 'transparent', 'transparent']}
+      color={['teal', 'teal', 'primary.700', 'primary.700']}
       {...props}
     >
       {children}

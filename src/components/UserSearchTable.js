@@ -1,96 +1,76 @@
-import React, { useMemo } from "react";
+import { useMemo } from 'react';
 
-import {
-  Box,
-  Flex,
-  Heading,
-  IconButton,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  //ModalHeader,
-  //ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Box, Flex } from '@chakra-ui/react';
 
-import { useRecoilState } from "recoil";
-import { searchuserState } from "../data/atomdata";
-import { useUsers } from "../react-query/users/useUsers";
-import CustomReactTable from "../helpers/CustomReactTable";
+import { useRecoilState } from 'recoil';
+import { searchuserState } from '../data/atomdata';
+import { useUsers } from '../react-query/users/useUsers';
+import CustomReactTable from '../helpers/CustomReactTable';
 
 const UserSearchTable = ({ update_Item, onUserSearchClose }) => {
   const { users } = useUsers();
-  const [filterText, setFilterText] = React.useState("");
   const [searchuser, setSearchUser] = useRecoilState(searchuserState);
-  const title = "User Search";
-
-  const filteredData = users.filter(
-    (item) =>
-      item.u_name &&
-      item.u_name.toLowerCase().includes(filterText.toLowerCase())
-  );
+  const title = 'User Search';
 
   const columns = useMemo(
     () => [
       {
-        header: "User Id",
-        accessorFn: (row) => row.u_userid,
+        header: 'User Id',
+        accessorFn: row => row.u_userid,
         size: 120,
         mantineTableBodyCellProps: {
-          align: "left",
+          align: 'left',
         },
       },
       {
-        header: "Name",
-        accessorFn: (row) => row.u_name,
+        header: 'Name',
+        accessorFn: row => row.u_name,
         size: 200,
         mantineTableBodyCellProps: {
-          align: "left",
+          align: 'left',
         },
       },
       {
-        header: "Email",
-        accessorFn: (row) => row.u_email,
+        header: 'Email',
+        accessorFn: row => row.u_email,
         //size: 120,
         mantineTableBodyCellProps: {
-          align: "left",
+          align: 'left',
         },
       },
       {
-        header: "Group",
-        accessorFn: (row) => row.u_group,
+        header: 'Group',
+        accessorFn: row => row.u_group,
         //size: 120,
         mantineTableBodyCellProps: {
-          align: "left",
+          align: 'left',
         },
       },
       {
-        header: "Level",
-        accessorFn: (row) => row.u_level,
+        header: 'Level',
+        accessorFn: row => row.u_level,
         //size: 120,
         mantineTableBodyCellProps: {
-          align: "left",
+          align: 'left',
         },
       },
     ],
     []
   );
 
-  const handleRowDoubleClick = (row) => {
+  const handleRowDoubleClick = row => {
     const { original } = row;
 
-    setSearchUser((prev) => (prev = original));
+    setSearchUser(prev => (prev = original));
     update_Item(original);
     onUserSearchClose();
   };
 
-  const handleSelectRow = (row) => {
+  const handleSelectRow = row => {
     const { original } = row;
     const { item_no } = original;
-    console.log("click", original);
-    setSearchUser((prev) => (prev = original));
+    console.log('click', original);
+    setSearchUser(prev => (prev = original));
     update_Item(original);
     onUserSearchClose();
   };
@@ -109,13 +89,8 @@ const UserSearchTable = ({ update_Item, onUserSearchClose }) => {
           columns={columns}
           data={users}
           disableExportStatus={true}
+          disableRowActionStatus={true}
           disableAddStatus={true}
-          disableSelectStatus={false}
-          disableUpdateStatus={true}
-          enableSelectStatus={true}
-          //handleAdd={handleAddEquip}
-          //handleEdit={handleEditEquip}
-          //handleDelete={handleDeleteEquip}
           handleSelect={handleSelectRow}
           handleRowDoubleClick={handleRowDoubleClick}
         />

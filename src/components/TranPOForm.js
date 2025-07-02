@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useIsFetching } from '@tanstack/react-query';
 import currency from 'currency.js';
 import { nanoid } from 'nanoid';
@@ -7,103 +7,49 @@ import { ImExit } from 'react-icons/im';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import {
-  AspectRatio,
   Box,
   Button,
-  ButtonGroup,
-  Center,
-  Checkbox,
-  Container,
   Divider,
   Flex,
   FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   Grid,
   GridItem,
   Heading,
   HStack,
   IconButton,
-  Image,
   Input,
-  InputGroup,
-  InputLeftAddon,
-  InputLeftElement,
-  Radio,
-  RadioGroup,
-  SimpleGrid,
-  Stack,
-  StackDivider,
   Text,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
   VStack,
-  Wrap,
-  WrapItem,
-  useRadio,
-  useRadioGroup,
   useDisclosure,
-  useColorMode,
-  useColorModeValue,
-  useBreakpointValue,
 } from '@chakra-ui/react';
 import { Group, Modal, Select } from '@mantine/core';
 import { branch } from '../utils/constants';
 import { AlertDialogBox } from '../helpers/AlertDialogBox';
-import {
-  AddIcon,
-  EditIcon,
-  DeleteIcon,
-  SearchIcon,
-  LockIcon,
-  ExternalLinkIcon,
-} from '@chakra-ui/icons';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 import { TiArrowBack, TiPrinter } from 'react-icons/ti';
-import { IconTrash, IconLock } from '@tabler/icons-react';
+import { IconTrash, IconLock, IconSearch, IconLink } from '@tabler/icons-react';
 import { useRecoilState } from 'recoil';
 import {
   tranState,
   trandetlsState,
-  transerialState,
   editTranIdState,
   editTranDetlsIdState,
-  editTranSerialIdState,
 } from '../data/atomdata';
 import { useItems } from '../react-query/items/useItems';
 import { useUpdateItem } from '../react-query/items/useUpdateItem';
 import { useTrans } from '../react-query/trans/useTrans';
 import { useAddTran } from '../react-query/trans/useAddTran';
 import { useUpdateTran } from '../react-query/trans/useUpdateTran';
-//import { useDeletePurchase } from '../react-query/purchases/useDeletePurchase';
 import { useTransDetls } from '../react-query/transdetls/useTranDetls';
 import { useAddTranDetls } from '../react-query/transdetls/useAddTranDetls';
 import { useDeleteTranDetls } from '../react-query/transdetls/useDeleteTranDetls';
-import { useUpdateTranDetls } from '../react-query/transdetls/useUpdateTranDetls';
-import { useTranLots } from '../react-query/translots/useTranLots';
-import { useAddTranLot } from '../react-query/translots/useAddTranLot';
-import { useDeleteTranLot } from '../react-query/translots/useDeleteTranLot';
-import { useTranSerial } from '../react-query/transserial/useTranSerial';
-import { useAddTranSerial } from '../react-query/transserial/useAddTranSerial';
-import { useDeleteTranSerial } from '../react-query/transserial/useDeleteTranSerial';
-import { useSuppliers } from '../react-query/suppliers/useSuppliers';
-import { useDocumentNo } from '../react-query/documentno/useDocumentNo';
-import { useUpdateDocumentno } from '../react-query/documentno/useUpdateDocumentno';
-//import { useAddPayable } from '../react-query/payable/useAddPayable';
 import { useAddItemsHistory } from '../react-query/itemshistory/useAddItemsHistory';
 import { useAddItemExpiry } from '../react-query/itemsexpiry/useAddItemExpiry';
-import { useAddItemSerial } from '../react-query/itemsserial/useAddItemSerial';
 import { useAddAuditlog } from '../react-query/auditlog/useAddAuditlog';
 import GetLocalUser from '../helpers/GetLocalUser';
 import SupplierSearchTable from './SupplierSearchTable';
 import TranPODetlsForm from './TranPODetlsForm';
-//import TranDetlsServForm from './PurchaseDetlsServForm';
 import TranPODetlsTable from './TranPODetlsTable';
-//import StktakeSearchTable from "./StktakeSearchTable";
-//import PurchaseDetlsServTable from './PurchaseDetlsServTable';
 
 const initial_ap = {
   ap_pono: '',
@@ -193,62 +139,23 @@ const initial_expiry = {
   ie_post: '0',
 };
 
-const initial_lot = {
-  tl_tranno: '',
-  tl_type: '',
-  tl_itemno: '',
-  tl_lotno: '',
-  tl_datereceived: null,
-  tl_location: '',
-  tl_dateexpiry: 0,
-  tl_pono: 0,
-  tl_podate: 0,
-  tl_qtyonhand: 0,
-  tl_qtyreceived: 0,
-  tl_ucost: 0,
-  tl_post: '0',
-  tl_qty: 0,
-};
-
-const initial_serial = {
-  ts_tranno: '',
-  ts_itemno: '',
-  ts_serialno: '',
-  ts_pono: '',
-  ts_invno: '',
-  ts_podate: null,
-  ts_invdate: null,
-  ts_post: '0',
-};
-
 const TranPOForm = () => {
   const isFetching = useIsFetching();
   const navigate = useNavigate();
-  const field_width = '150';
   const field_gap = '3';
-  const { documentno } = useDocumentNo();
-  const updateDocumentno = useUpdateDocumentno();
   const { items } = useItems();
   const updateItem = useUpdateItem();
-  const { suppliers } = useSuppliers();
   const { transactions } = useTrans();
   const addTran = useAddTran();
   const updateTran = useUpdateTran();
   const addTranDetls = useAddTranDetls();
   const deleteTranDetls = useDeleteTranDetls();
-  const updateTranDetls = useUpdateTranDetls();
-  const addTranSerial = useAddTranSerial();
-  const deleteTranSerial = useDeleteTranSerial();
-  //const addPayable = useAddPayable();
+
   const addItemsHistory = useAddItemsHistory();
   const addItemExpiry = useAddItemExpiry();
-  const addItemSerial = useAddItemSerial();
-  const addTranLot = useAddTranLot();
-  const deleteTranLot = useDeleteTranLot();
-  //const { stktakedetls, setBatchDetlsId } = useStktakedetls();
+
   const { transdetls } = useTransDetls();
-  const { translots } = useTranLots();
-  const { transserial } = useTranSerial();
+
   const addAuditlog = useAddAuditlog();
   const localuser = GetLocalUser();
   const [singlebatchdetlsstate, setSingleBatchDetlsState] = useState({});
@@ -256,28 +163,17 @@ const TranPOForm = () => {
   const [statustype, setStatusType] = useState('');
   const [isCalc, setIsCalc] = useState(true);
 
-  //const [filterText, setFilterText] = React.useState('');
-  const [doctype, setDocType] = useState('Purchase');
   const [batch, setBatch] = useRecoilState(tranState);
   const [batchdetls, setBatchdetls] = useRecoilState(trandetlsState);
-  const [batchserial, setBatchSerial] = useRecoilState(transerialState);
   const [editBatchId, setEditBatchId] = useRecoilState(editTranIdState);
   const [editBatchdetlsId, setEditBatchdetlsId] =
     useRecoilState(editTranDetlsIdState);
-  const [editBatchserialId, setEditBatchserialId] = useRecoilState(
-    editTranSerialIdState
-  );
+
   const [doclayout, setDocLayout] = useState(editBatchId.layout);
   const [tranno, setTranno] = useState(batch.t_no);
   const [totamt, setTotAmt] = useState(batch.t_subtotal);
   const [totdisc, setTotDisc] = useState(batch.t_disc);
   const [lock, setLock] = useState(batch.t_post);
-
-  //console.log("single batchserial", singlebatchserialstate);
-  //console.log("batch serial", batchserial);
-  //console.log("batch details", batchdetls);
-  //console.log("edit batch", editBatchId);
-  //console.log('doc', documentno);
 
   const {
     isOpen: isAlertDeleteOpen,
@@ -304,19 +200,11 @@ const TranPOForm = () => {
   } = useDisclosure();
 
   const {
-    isOpen: isStktakeSearchOpen,
-    onOpen: onStktakeSearchOpen,
-    onClose: onStktakeSearchClose,
-  } = useDisclosure();
-
-  const {
     handleSubmit,
-    register,
     control,
-    reset,
     setValue,
     getValues,
-    formState: { errors, isSubmitting, id },
+    formState: {},
   } = useForm({
     defaultValues: {
       ...batch,
@@ -328,7 +216,7 @@ const TranPOForm = () => {
     const { t_no, t_type, t_date } = data;
     addTran(data);
     // delete old details
-    //deleteSamplesBatchDetls({ sbd_batchno: sb_batchno });
+
     //add details
     batchdetls.forEach(rec => {
       const { tl_id, ...fields } = rec;
@@ -340,35 +228,19 @@ const TranPOForm = () => {
       });
     });
     //add serial details
-    /*   batchserial.forEach((rec) => {
-      const { id, ts_id, ...fields } = rec;
-      addTranSerial({
-        ...fields,
-        ts_pono: t_no,
-        ts_podate: t_date,
-        ts_post: "0",
-      });
-    }); */
   };
 
   const update_Batch = data => {
     console.log('edit batch', data);
     const { id, t_id, t_no, t_date, ...fields } = data;
     // delete old details
-    //deleteTranDetls({ tl_tranno: t_no });
+
     const detlsitems = transdetls.filter(r => r.tl_tranno === t_no);
     detlsitems.length > 0 &&
       detlsitems.forEach(rec => {
         deleteTranDetls(rec);
       });
-    //delete old serial no
-    /*    const detlsserial = transserial.filter((r) => r.ts_pono === t_no);
-    detlsserial.length > 0 &&
-      detlsserial.forEach((rec) => {
-        deleteTranSerial(rec.id);
-      }); */
 
-    // update header
     updateTran(data);
     //add details
     batchdetls.forEach(rec => {
@@ -379,16 +251,6 @@ const TranPOForm = () => {
         tl_trandate: data.t_date,
       });
     });
-    //add serial details
-    /*   batchserial.forEach((rec) => {
-      const { id, ts_id, ...fields } = rec;
-      addTranSerial({
-        ...fields,
-        ts_pono: t_no,
-        ts_podate: t_date,
-        ts_post: "0",
-      });
-    }); */
   };
 
   const handleCalc = () => {
@@ -427,46 +289,6 @@ const TranPOForm = () => {
     setValue('t_add4', s_add4);
   };
 
-  const handleSearchSupp = data => {
-    const result = suppliers.filter(r => r.s_suppno === data);
-    //update_StktakeDetls(...result);
-  };
-
-  /* const handleStktakeSearch = () => {
-    onStktakeSearchOpen();
-  }; */
-
-  /* const update_StktakeDetls = (data) => {
-    console.log("stktake", data);
-    const { st_batchno } = data;
-    const newData = stktakedetls
-      .filter((r) => r.std_batchno === st_batchno)
-      .map((rec) => {
-        const itemno = rec.std_itemno;
-        const itemrec = items.filter((r) => r.item_no === itemno);
-        return {
-          ...initial_batchdetls,
-          tl_tranno: editBatchId.no,
-          tl_type: "item",
-          tl_itemno: rec.std_itemno,
-          tl_desp: itemrec[0].item_desp,
-          tl_ucost: itemrec[0].item_cost,
-          tl_netucost: itemrec[0].item_cost,
-          tl_qty: rec.std_qty,
-          tl_trackexpiry: itemrec[0].item_trackexpiry,
-          tl_unit: itemrec[0].item_unit,
-          tl_excost: Math.round(rec.std_qty * itemrec[0].item_cost),
-        };
-      });
-    var oldData = [];
-    if (batchdetls.length > 0) {
-      oldData = batchdetls;
-    }
-    console.log("import", oldData, newData);
-    setBatchdetls([...oldData, ...newData]);
-    setIsCalc(true);
-  }; */
-
   const handlePost = () => {
     var doctype = '';
     var qtyonhand = 0;
@@ -476,12 +298,7 @@ const TranPOForm = () => {
     var supp = '';
     const data = getValues();
     const newData = { ...data, t_post: '1' };
-    //console.log('post', newData);
-    //const data = getValues();
-    //const newData = { ...data, t_post: '1' };
-    //onSubmit(newData);
 
-    //onSubmit(newData);
     const { id, t_id, t_no, ...fields } = newData;
     //delete old tran details
     const detlsitems = transdetls.filter(r => r.tl_tranno === t_no);
@@ -504,33 +321,6 @@ const TranPOForm = () => {
       });
     });
 
-    /*  const ap = {
-      ...initial_ap,
-      ap_pono: data.po_no,
-      ap_podate: data.po_date,
-      ap_invno: data.po_invno,
-      ap_invdate: data.po_invdate,
-      ap_suppno: data.po_suppno,
-      ap_supplier: data.po_supp,
-      ap_type: data.po_type,
-      ap_subtotal_amt: data.po_subtotal,
-      ap_nettotal_amt: data.po_nettotal,
-      ap_disc_amt: data.po_disc,
-      ap_balance: data.po_nettotal,
-    };
-    addPayable(ap); */
-
-    /*  switch (trantype) {
-      case 'Purchase':
-        doctype = 'Purchase';
-        break;
-      case 'Despatch':
-        doctype = 'Despatch';
-        break;
-
-      default:
-        break;
-    } */
     if (data.t_layout === 'Item' && batchdetls.length > 0) {
       batchdetls.forEach(rec => {
         // get itemonhand details
@@ -581,7 +371,7 @@ const TranPOForm = () => {
         }
 
         //update item onhand
-        //console.log('post', itemonhandrec);
+
         if (itemonhandrec.length > 0) {
           switch (data.t_type) {
             case 'Purchase':
@@ -709,13 +499,10 @@ const TranPOForm = () => {
 
   const handleEditBatchDetls = row => {
     const { original } = row;
-    /*  const serialdata = batchserial.filter(
-      (r) => r.ts_itemno === original.tl_itemno
-    ); */
 
     setStatusType(prev => (prev = 'edit'));
     setSingleBatchDetlsState(prev => original);
-    // setSingleBatchSerialState(serialdata);
+
     if (doclayout === 'Service') {
       onBatchDetlsServOpen(true);
     } else {
@@ -741,7 +528,7 @@ const TranPOForm = () => {
       tl_trantype: doctype,
     };
     setSingleBatchDetlsState(detlsdata);
-    // setSingleBatchSerialState([]);
+
     if (doclayout === 'Service') {
       onBatchDetlsServOpen(true);
     } else {
@@ -755,11 +542,8 @@ const TranPOForm = () => {
     console.log('adddata', dataUpdate);
     const oldData = batchdetls;
     const newData = [...oldData, dataUpdate];
-    //   console.log('newdata', newData);
+
     setBatchdetls(newData);
-    // const newSerialData = [...batchserial, ...singlebatchserialstate];
-    // console.log("add batchdetls", newSerialData);
-    // setBatchSerial(newSerialData);
 
     setIsCalc(true);
   };
@@ -769,15 +553,11 @@ const TranPOForm = () => {
     console.log('editdata', dataUpdate);
     const oldData = batchdetls.filter(r => r.tl_id !== data.tl_id);
     setBatchdetls([...oldData, dataUpdate]);
-    /*  const oldSerialData = batchserial.filter(
-      (r) => r.ts_itemno !== data.tl_itemno
-    );
-    setBatchSerial([...oldSerialData, ...singlebatchserialstate]); */
+
     setIsCalc(true);
   };
 
   const handleOnDelBatchDetlsConfirm = () => {
-    //console.log("deldata", data)
     const { id } = editBatchdetlsId;
     const newData = batchdetls.filter(r => r.tl_id !== id);
     console.log('delete', newData);
@@ -820,10 +600,7 @@ const TranPOForm = () => {
         h={{ base: 'auto', md: 'full' }}
         p="2"
         spacing="10"
-        //align="left"
-        //alignItems="flex-start"
       >
-        {/* <form onSubmit={handleSubmit(onSubmit)}> */}
         <form>
           <HStack py={2} spacing="3">
             <Grid templateColumns={'repeat(12,1fr)'} columnGap={3}>
@@ -838,7 +615,7 @@ const TranPOForm = () => {
                   Back
                 </Button>
               </GridItem>
-              {/*  <GridItem colSpan={1}></GridItem> */}
+
               <GridItem colSpan={3}>
                 <VStack alignItems={'flex-start'} px={1}>
                   <Heading size="lg">Purchase Invoice Form</Heading>
@@ -846,10 +623,6 @@ const TranPOForm = () => {
                 </VStack>
               </GridItem>
               <GridItem colSpan={3}></GridItem>
-              {/*  <GridItem colSpan={1}>
-                {lock === '1' && <IconLock size={42} color="red" />}
-                {lock === 'D' && <IconTrash size={42} color="red" />}
-              </GridItem> */}
 
               <GridItem colSpan={5}>
                 <Flex>
@@ -859,16 +632,6 @@ const TranPOForm = () => {
                       {lock === 'D' && <IconTrash size={42} color="red" />}
                     </Box>
                     <Group>
-                      {/*  <Button
-                        leftIcon={<ExternalLinkIcon />}
-                        colorScheme="teal"
-                        variant={"outline"}
-                        size="lg"
-                        onClick={handleStktakeSearch}
-                        isDisabled={lock === "1" || isFetching}
-                      >
-                        Import
-                      </Button> */}
                       <Button
                         leftIcon={<ExternalLinkIcon />}
                         colorScheme="teal"
@@ -886,12 +649,12 @@ const TranPOForm = () => {
                         variant={'outline'}
                         size="lg"
                         onClick={handlePrint}
-                        isDisabled={isFetching}
+                        isDisabled={editBatchId.status === 'add' || isFetching}
                       >
                         Print
                       </Button>
                       <Button
-                        leftIcon={<ExternalLinkIcon />}
+                        leftIcon={<IconLink />}
                         colorScheme="teal"
                         variant={'outline'}
                         size="lg"
@@ -939,7 +702,6 @@ const TranPOForm = () => {
                       <Controller
                         control={control}
                         name="t_scno"
-                        //defaultValue={invoice.sls_custno || ''}
                         render={({ field: { onChange, value, ref } }) => (
                           <VStack align="left">
                             <Text as="b" fontSize="sm" textAlign="left">
@@ -951,7 +713,6 @@ const TranPOForm = () => {
                               width="full"
                               onChange={onChange}
                               borderColor="gray.400"
-                              //textTransform="capitalize"
                               ref={ref}
                               placeholder="supplier no"
                               minWidth="100"
@@ -963,7 +724,7 @@ const TranPOForm = () => {
                     <Box pt={7}>
                       <IconButton
                         onClick={() => handleSupplierSearch()}
-                        icon={<SearchIcon />}
+                        icon={<IconSearch />}
                         size="md"
                         colorScheme="teal"
                       />

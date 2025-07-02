@@ -1,16 +1,6 @@
-import React, { useState, useMemo } from 'react';
-import currency from 'currency.js';
-import { formatNumber, formatCurrency } from '../helpers/utils';
+import { useState, useMemo } from 'react';
 import { Toast } from '../helpers/CustomToastify';
-import {
-  Box,
-  Flex,
-  Heading,
-  IconButton,
-  HStack,
-  VStack,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Box, Flex, Heading, VStack, useDisclosure } from '@chakra-ui/react';
 import { Modal, Tabs } from '@mantine/core';
 import { useRecoilState } from 'recoil';
 import {
@@ -21,25 +11,15 @@ import {
   editTranadjustDetlsIdState,
   editTranadjustLotIdState,
 } from '../data/atomdata';
-import { formatPrice } from '../helpers/utils';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import CustomReactTable from '../helpers/CustomReactTable';
 import { AlertDialogBox } from '../helpers/AlertDialogBox';
-//import { AiFillEdit, AiFillDelete, AiOutlinePlus } from 'react-icons/ai';
-import { EditIcon, DeleteIcon, AddIcon } from '@chakra-ui/icons';
 import { useTransadjust } from '../react-query/transadjust/useTransadjust';
 import { useAddTransadjust } from '../react-query/transadjust/useAddTransadjust';
-import { useDeleteTransadjust } from '../react-query/transadjust/useDeleteTransadjust';
 import { useUpdateTransadjust } from '../react-query/transadjust/useUpdateTransadjust';
 import { useTransadjustDetls } from '../react-query/transadjustdetls/useTransadjustsDetls';
-import { useDeleteTransAdjustDetls } from '../react-query/transadjustdetls/useDeleteTransAdjustDetls';
-import { useAddTransAdjustDetls } from '../react-query/transadjustdetls/useAddTransAdjustDetls';
 import { useTransadjustLot } from '../react-query/transadjlot/useTransadjustLot';
-import { useAddTransAdjustLot } from '../react-query/transadjlot/useAddTransadjustLot';
-import { useDeleteTransAdjustLot } from '../react-query/transadjlot/useDeleteTransadjustLot';
-import { useItemsHistory } from '../react-query/itemshistory/useItemsHistory';
-import { useDeleteItemsHistory } from '../react-query/itemshistory/useDeteteItemsHistory';
 import { useAddAuditlog } from '../react-query/auditlog/useAddAuditlog';
 import GetLocalUser from '../helpers/GetLocalUser';
 import Export2Excel from '../helpers/Export2Excel';
@@ -58,24 +38,19 @@ const initial_tran = {
   ta_type: 'Adjustment',
 };
 
-const TransTable = () => {
+const TranAdjustTable = () => {
   const navigate = useNavigate();
   const { tranadjust, setTranAdjno } = useTransadjust();
   const addTransadjust = useAddTransadjust();
-  const deleteTransadjust = useDeleteTransadjust();
+
   const updateTransadjust = useUpdateTransadjust();
   const { tranadjustdetls, setTranAdjDetlId } = useTransadjustDetls();
-  const addTransadjustDetls = useAddTransAdjustDetls();
-  const deleteTransadjustDetls = useDeleteTransAdjustDetls();
-  const { tranadjustlot, setTranAdjlotId } = useTransadjustLot();
-  const addTransadjustLot = useAddTransAdjustLot();
-  const deleteTransadjustLot = useDeleteTransAdjustLot();
 
-  const { itemshistory, setItemhistItemno } = useItemsHistory();
-  const deleteItemsHistory = useDeleteItemsHistory();
+  const { tranadjustlot, setTranAdjlotId } = useTransadjustLot();
+
   const [state, setState] = useState({});
   const [statustype, setStatusType] = useState('');
-  const [filterText, setFilterText] = React.useState('');
+
   const [trans, setTrans] = useRecoilState(tranadjustState);
   const [transdetls, setTransdetls] = useRecoilState(tranadjustdetlsState);
   const [translot, setTranslot] = useRecoilState(tranadjustlotState);
@@ -167,11 +142,7 @@ const TransTable = () => {
     const { id, ta_id, ta_batchno } = state;
     const updRec = { ...state, ta_post: 'D' };
     updateTransadjust(updRec);
-    /*  tranadjustdetls
-      .filter(r => r.tad_batchno === ta_batchno)
-      .forEach(rec => {
-        deleteTransadjustDetls({ tad_id: rec.tad_id });
-      }); */
+
     //add to auditlog
     const auditdata = {
       al_userid: localuser.userid,
@@ -299,7 +270,6 @@ const TransTable = () => {
     };
     addAuditlog(auditdata);
     // export CSV
-    const tableHeaders = columns.map(c => c.header);
     //const rowData = rows.map(row => row.original);
     const rowData = rows.map(row => [
       row.original.ta_batchno,
@@ -447,4 +417,4 @@ const TransTable = () => {
   );
 };
 
-export default TransTable;
+export default TranAdjustTable;

@@ -1,12 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 
-import {
-  Box,
-  Flex,
-  Heading,
-  IconButton,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Box, Flex, Heading, useDisclosure } from '@chakra-ui/react';
 import { Modal } from '@mantine/core';
 import { AlertDialogBox } from '../helpers/AlertDialogBox';
 import { useUsers } from '../react-query/users/useUsers';

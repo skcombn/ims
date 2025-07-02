@@ -3107,26 +3107,29 @@ const RootMutation = new GraphQLObjectType({
     addAuditlog: {
       type: AuditlogType,
       args: {
-        at_userid: { type: GraphQLString },
-        at_user: { type: GraphQLString },
-        at_date: { type: DateScalar },
-        at_time: { type: GraphQLString },
-        at_module: { type: GraphQLString },
-        at_record: { type: GraphQLString },
-        at_remark: { type: GraphQLString },
-        at_timestr: { type: GraphQLString },
+        al_userid: { type: GraphQLString },
+        al_user: { type: GraphQLString },
+        al_date: { type: DateScalar },
+        al_time: { type: GraphQLString },
+        al_timestr: { type: GraphQLString },
+        al_module: { type: GraphQLString },
+        al_action: { type: GraphQLString },
+        al_record: { type: GraphQLString },
+        al_remark: { type: GraphQLString },
       },
       resolve(parentValue, args) {
-        const query = `INSERT INTO dbo_auditlog(at_userid, at_user, at_date, at_time, at_module,at_record, at_remark,at_timestr) VALUES ($1, $2,$3,$4,$5,$6,$7,$8) RETURNING at_id`;
+        const query = `INSERT INTO dbo_auditlog(al_userid, al_user, al_date,al_time, al_timestr, al_module, 
+                        al_action, al_record, al_remark) VALUES ($1, $2, $3, $4,$5,$6,$7,$8,$9) RETURNING al_id`;
         const values = [
-          args.at_userid,
-          args.at_user,
-          args.at_date,
-          args.at_time,
-          args.at_module,
-          args.at_record,
-          args.at_remark,
-          args.at_timestr,
+          args.al_userid,
+          args.al_user,
+          args.al_date,
+          args.al_time,
+          args.al_timestr,
+          args.al_module,
+          args.al_action,
+          args.al_record,
+          args.al_remark,
         ];
 
         return db
@@ -3138,28 +3141,31 @@ const RootMutation = new GraphQLObjectType({
     updateAuditlog: {
       type: AuditlogType,
       args: {
-        at_id: { type: GraphQLID },
-        at_userid: { type: GraphQLString },
-        at_user: { type: GraphQLString },
-        at_date: { type: DateScalar },
-        at_time: { type: GraphQLString },
-        at_module: { type: GraphQLString },
-        at_record: { type: GraphQLString },
-        at_remark: { type: GraphQLString },
-        at_timestr: { type: GraphQLString },
+        al_id: { type: GraphQLID },
+        al_userid: { type: GraphQLString },
+        al_user: { type: GraphQLString },
+        al_date: { type: DateScalar },
+        al_time: { type: GraphQLString },
+        al_timestr: { type: GraphQLString },
+        al_module: { type: GraphQLString },
+        al_action: { type: GraphQLString },
+        al_record: { type: GraphQLString },
+        al_remark: { type: GraphQLString },
       },
       resolve(parentValue, args) {
-        const query = `UPDATE dbo_auditlog SET at_userid = $2, at_user = $3, at_date=$4, at_time=$5, at_module=$6, at_record=$7, at_remark=$8, at_timestr=$9 WHERE at_id=$1 RETURNING at_id`;
+        const query = `UPDATE dbo_auditlog SET al_userid = $2, al_user=$3, al_date = $4, al_time=$5,
+                        al_timestr=$6,  al_module=$7, al_action=$8, al_record=$9, al_remark = $10 WHERE al_id=$1 RETURNING al_id`;
         const values = [
-          args.at_id,
-          args.at_userid,
-          args.at_user,
-          args.at_date,
-          args.at_time,
-          args.at_module,
-          args.at_record,
-          args.at_remark,
-          args.at_timestr,
+          args.al_id,
+          args.al_userid,
+          args.al_user,
+          args.al_date,
+          args.al_time,
+          args.al_timestr,
+          args.al_module,
+          args.al_action,
+          args.al_record,
+          args.al_remark,
         ];
 
         return db
@@ -3170,10 +3176,10 @@ const RootMutation = new GraphQLObjectType({
     },
     deleteAuditlog: {
       type: AuditlogType,
-      args: { at_id: { type: GraphQLID } },
+      args: { al_id: { type: GraphQLID } },
       resolve(parentValue, args) {
-        const query = `DELETE from dbo_auditlog where at_id=$1 RETURNING at_id`;
-        const values = [args.at_id];
+        const query = `DELETE from dbo_auditlog where al_id=$1 RETURNING al_id`;
+        const values = [args.al_id];
 
         return db
           .one(query, values)

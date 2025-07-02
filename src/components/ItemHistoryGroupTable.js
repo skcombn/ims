@@ -1,72 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { useIsFetching } from '@tanstack/react-query';
-import { Toast } from '../helpers/CustomToastify';
-import { ImExit } from 'react-icons/im';
-import { AddIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo } from 'react';
 import { NumericFormat } from 'react-number-format';
 
-import {
-  AspectRatio,
-  Box,
-  Button,
-  ButtonGroup,
-  Center,
-  Checkbox,
-  Container,
-  Divider,
-  Flex,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
-  Grid,
-  GridItem,
-  Heading,
-  HStack,
-  IconButton,
-  Image,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  InputLeftElement,
-  Radio,
-  RadioGroup,
-  Stack,
-  StackDivider,
-  Text,
-  VStack,
-  ScaleFade,
-  Wrap,
-  WrapItem,
-  useRadio,
-  useRadioGroup,
-  useDisclosure,
-  useColorMode,
-  useColorModeValue,
-  useBreakpointValue,
-} from '@chakra-ui/react';
-import { Modal, NumberInput, Select, Tabs } from '@mantine/core';
-import { useRecoilState } from 'recoil';
-import { itemState, editItemIdState } from '../data/atomdata';
-import {
-  IconCreativeCommonsNd,
-  IconDoorExit,
-  IconSend,
-} from '@tabler/icons-react';
+import { Box, Flex } from '@chakra-ui/react';
+
 import CustomReactTable from '../helpers/CustomReactTable';
-import { useItems } from '../react-query/items/useItems';
 import { useItemsHistoryGroupByItemno } from '../react-query/itemshistory/useItemsHistoryGroupByItemno';
-import { useAddItem } from '../react-query/items/useAddItem';
-import { useUpdateItem } from '../react-query/items/useUpdateItem';
-import { useItemGroups } from '../react-query/itemgroup/useItemGroups';
-import { useGroups } from '../react-query/groups/useGroups';
-import GroupForm from './GroupForm';
 
 const ItemHistoryGroupTable = ({ itemno }) => {
   console.log('item history', itemno);
-  const { items } = useItems();
+
   const { itemshistorygroup, setHistGrpItemno } =
     useItemsHistoryGroupByItemno();
 

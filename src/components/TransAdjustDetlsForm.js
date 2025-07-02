@@ -1,73 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { Controller, useForm } from 'react-hook-form';
 import { useIsFetching } from '@tanstack/react-query';
-import { formatPrice } from '../helpers/utils';
-import { FiSave } from 'react-icons/fi';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { ImExit } from 'react-icons/im';
-import { useNavigate } from 'react-router-dom';
 import { nanoid } from 'nanoid';
 import {
-  AspectRatio,
   Box,
   Button,
   ButtonGroup,
-  Center,
-  Checkbox,
-  Container,
   Divider,
   Flex,
   FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   Grid,
   GridItem,
   Heading,
   HStack,
   IconButton,
-  Image,
   Input,
   InputGroup,
   InputLeftAddon,
-  InputLeftElement,
-  Radio,
-  RadioGroup,
-  Stack,
-  StackDivider,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
   VStack,
-  Wrap,
-  WrapItem,
-  useRadio,
-  useRadioGroup,
   useDisclosure,
-  useColorMode,
-  useColorModeValue,
-  useBreakpointValue,
 } from '@chakra-ui/react';
-import { Modal, NumberInput, ActionIcon, Text, Tooltip } from '@mantine/core';
-import {
-  IconEdit,
-  IconTrash,
-  IconSquareRoundedPlus,
-  IconPlus,
-} from '@tabler/icons-react';
+import { Modal, NumberInput, ActionIcon, Tooltip } from '@mantine/core';
+import { IconEdit } from '@tabler/icons-react';
 import { IconDoorExit, IconSend } from '@tabler/icons-react';
 import { useRecoilState } from 'recoil';
 import {
   editTranadjustIdState,
   editTranadjustDetlsIdState,
-  editTranadjustLotIdState,
 } from '../data/atomdata';
 import { useItemsExpiry } from '../react-query/itemsexpiry/useItemsExpiry';
-import { useItemsSerial } from '../react-query/itemsserial/useItemsSerial';
-import CustomReactTable from '../helpers/CustomReactTable';
+
 import ItemSearchTable from './ItemSearchTable';
 
 const TransAdjustDetlsForm = ({
@@ -75,9 +39,6 @@ const TransAdjustDetlsForm = ({
   setState,
   lotsstate,
   setLotsState,
-  serialstate,
-  setSerialState,
-  //statustype,
   add_Item,
   update_Item,
   onItemClose,
@@ -85,28 +46,16 @@ const TransAdjustDetlsForm = ({
   update_LotItem,
 }) => {
   const isFetching = useIsFetching();
-  const navigate = useNavigate();
   const field_width = '150';
   const field_gap = '3';
   const { itemsexpiry, setItemExpId } = useItemsExpiry();
-  //const [qtyonhand, setQtyOnhand] = useState(state.tad_qtyonhand);
   const [qtycount, setQtyCount] = useState(state.tad_qtycount);
   const [qtyadjust, setQtyAdjust] = useState(state.tad_qtyadjust);
   const [isexpirydate, setIsExpiryDate] = useState(state.tad_trackexpiry);
-  const [batchlotform, setBatchLotForm] = useState();
-  const [editBatchId, setEditBatchId] = useRecoilState(editTranadjustIdState);
   const [editBatchdetlsId, setEditBatchdetlsId] = useRecoilState(
     editTranadjustDetlsIdState
   );
-  const [editBatchlotId, setEditBatchlotId] = useRecoilState(
-    editTranadjustLotIdState
-  );
-  //const [ucost, setUCost] = useState(state.tad_netucost);
-  //const [qty, setQty] = useState(state.tl_qty);
-  //const [trackserial, setTrackSerial] = useState(state.tl_trackserial);
 
-  console.log('batch detls form state', state);
-  console.log('batch lot form state', lotsstate);
   const {
     isOpen: isSearchOpen,
     onOpen: onSearchOpen,
@@ -115,12 +64,10 @@ const TransAdjustDetlsForm = ({
 
   const {
     handleSubmit,
-    register,
     control,
-    reset,
     setValue,
     getValues,
-    formState: { errors, isSubmitting, id },
+    formState: { isSubmitting },
   } = useForm({
     defaultValues: {
       ...state,
@@ -171,8 +118,6 @@ const TransAdjustDetlsForm = ({
 
   //CREATE action
   const handleCreateItem = ({ values, exitCreatingMode }) => {
-    //console.log("create", values);
-    //handleAdd({ ...values });
     exitCreatingMode();
   };
 
@@ -184,7 +129,7 @@ const TransAdjustDetlsForm = ({
         ? values.tal_qtyonhand
         : parseFloat(values.tal_qtycount);
     const { original } = row;
-    const { tal_id } = original;
+
     console.log('lotsave', values, original);
     const qtyadj = Math.round(qtyvalue - values.tal_qtyonhand, 2);
     const newData = [
@@ -263,12 +208,10 @@ const TransAdjustDetlsForm = ({
     setValue('tad_qtyonhand', item_qtyonhand);
     setValue('tad_qtycount', item_qtyonhand);
     setValue('tad_trackexpiry', item_trackexpiry);
-    //setValue('tl_ucost', item_ucost_pc);
-    //setValue('tl_netucost', item_ucost_pc);
     setQtyCount(prev => (prev = 0));
     setQtyAdjust(prev => (prev = 0));
     setIsExpiryDate(item_trackexpiry);
-    //setUCost(prev => (prev = item_cost));
+
     //update batchlots
     const newLotData = itemsexpiry
       .filter(r => r.ie_itemno === item_no && r.ie_post === '0')
@@ -392,7 +335,6 @@ const TransAdjustDetlsForm = ({
                             width="full"
                             onChange={onChange}
                             borderColor="gray.400"
-                            //textTransform="capitalize"
                             ref={ref}
                             placeholder="item no"
                             minWidth="100"
@@ -431,7 +373,6 @@ const TransAdjustDetlsForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="item description"
                           minWidth="200"
@@ -442,36 +383,6 @@ const TransAdjustDetlsForm = ({
                 />
               </FormControl>
             </GridItem>
-            {/*  <GridItem colSpan={9} mt={field_gap}>
-              <FormControl>
-                <Controller
-                  control={control}
-                  name="tad_packing"
-                  defaultValue={state.tad_packing}
-                  render={({ field: { onChange, value, ref } }) => (
-                    <InputGroup>
-                      <HStack w="100%" py={1}>
-                        <InputLeftAddon
-                          children="Packing"
-                          minWidth={field_width}
-                        />
-                        <Input
-                          name="tad_packing"
-                          value={value || ''}
-                          width="full"
-                          onChange={onChange}
-                          borderColor="gray.400"
-                          //textTransform="capitalize"
-                          ref={ref}
-                          placeholder="item packing"
-                          minWidth="500"
-                        />
-                      </HStack>
-                    </InputGroup>
-                  )}
-                />
-              </FormControl>
-            </GridItem> */}
 
             <GridItem colSpan={9} mt={field_gap}>
               <FormControl>
@@ -503,10 +414,7 @@ const TransAdjustDetlsForm = ({
                           onChange={e => {
                             onChange(e);
                           }}
-                          //borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
-                          //placeholder="qty"
                           readOnly
                         />
                       </HStack>
@@ -534,7 +442,6 @@ const TransAdjustDetlsForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="unit"
                         />
@@ -575,10 +482,7 @@ const TransAdjustDetlsForm = ({
                             onChange(e);
                             setQtyCount(prev => (prev = e));
                           }}
-                          //borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
-                          //placeholder="qty"
                           readOnly={isexpirydate}
                         />
                       </HStack>
@@ -617,10 +521,7 @@ const TransAdjustDetlsForm = ({
                           onChange={e => {
                             onChange(e);
                           }}
-                          //borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
-                          //placeholder="qty"
                           readOnly
                         />
                       </HStack>
@@ -649,7 +550,6 @@ const TransAdjustDetlsForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="remark"
                         />
@@ -673,10 +573,7 @@ const TransAdjustDetlsForm = ({
         <ItemSearchTable
           state={state}
           setState={setState}
-          //add_Item={add_InvDetls}
           update_Item={update_ItemDetls}
-          //statustype={statustype}
-          //setStatusType={setStatusType}
           onItemSearchClose={onSearchClose}
         />
       </Modal>

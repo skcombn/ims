@@ -1,41 +1,15 @@
 import React, { useMemo } from 'react';
 
-import {
-  Box,
-  Flex,
-  Heading,
-  IconButton,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  //ModalHeader,
-  //ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-} from '@chakra-ui/react';
-import CustomDataTable from './CustomDataTable';
+import { Box, Flex } from '@chakra-ui/react';
 import { useRecoilState } from 'recoil';
 import { searchitemState } from '../data/atomdata';
 import { useGroups } from '../react-query/groups/useGroups';
 import CustomReactTable from '../helpers/CustomReactTable';
 
-const initial_group = {
-  group_desp: '',
-  group_category: '',
-};
-
 const GroupSearchTable = ({ update_Item, onSearchClose }) => {
   const { groups, setGroupId } = useGroups();
-  const [filterText, setFilterText] = React.useState('');
   const [searchitem, setSearchItem] = useRecoilState(searchitemState);
   const title = 'Group Search';
-
-  const filteredData = groups.filter(
-    item =>
-      item.group_desp &&
-      item.group_desp.toLowerCase().includes(filterText.toLowerCase())
-  );
 
   const columns = useMemo(
     () => [
@@ -89,9 +63,6 @@ const GroupSearchTable = ({ update_Item, onSearchClose }) => {
           disableExportStatus={true}
           disableRowActionStatus={true}
           disableAddStatus={true}
-          //handleAdd={handleAddEquip}
-          //handleEdit={handleEditEquip}
-          //handleDelete={handleDeleteEquip}
           handleSelect={handleSelectRow}
           handleRowDoubleClick={handleRowDoubleClick}
         />

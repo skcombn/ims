@@ -99,22 +99,6 @@ const AuditlogTable = () => {
         },
       },
       {
-        header: 'HIV Id',
-        accessorKey: 'al_hivno',
-        size: 150,
-        mantineTableBodyCellProps: {
-          align: 'left',
-        },
-      },
-      {
-        header: 'Malaria Id',
-        accessorKey: 'al_malariano',
-        size: 150,
-        mantineTableBodyCellProps: {
-          align: 'left',
-        },
-      },
-      {
         header: 'Action',
         accessorKey: 'al_action',
         size: 150,

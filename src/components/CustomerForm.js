@@ -1,99 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { formatPrice } from "../helpers/utils";
-import { FiSave } from "react-icons/fi";
-import { AiOutlinePlus } from "react-icons/ai";
-import { Toast } from "../helpers/CustomToastify";
-import { useNavigate } from "react-router-dom";
-import { useIsFetching } from "@tanstack/react-query";
-import dayjs from "dayjs";
+import { Controller, useForm } from 'react-hook-form';
+import { Toast } from '../helpers/CustomToastify';
+import { useIsFetching } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import {
-  AspectRatio,
-  Box,
   Button,
   ButtonGroup,
-  Center,
-  Checkbox,
-  Container,
   Divider,
   Flex,
   FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   Grid,
   GridItem,
   Heading,
   HStack,
-  IconButton,
-  Image,
   Input,
   InputGroup,
   InputLeftAddon,
-  InputLeftElement,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Radio,
-  RadioGroup,
-  Select,
-  SimpleGrid,
-  Stack,
-  StackDivider,
-  Text,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
   VStack,
-  Wrap,
-  WrapItem,
-  useRadio,
-  useRadioGroup,
-  useDisclosure,
-  useColorMode,
-  useColorModeValue,
-  useBreakpointValue,
-} from "@chakra-ui/react";
-import {
-  IconEdit,
-  IconTrash,
-  IconSquareRoundedPlus,
-  IconPlus,
-  IconSend,
-  IconDoorExit,
-} from "@tabler/icons-react";
-import { useCustomers } from "../react-query/customers/useCustomers";
-import { useAddAuditlog } from "../react-query/auditlog/useAddAuditlog";
-import GetLocalUser from "../helpers/GetLocalUser";
-
-const initial_cust = [
-  {
-    c_custno: "",
-    c_cust: "",
-    c_add1: "",
-    c_add2: "",
-    c_add3: "",
-    c_add4: "",
-    c_phone: "",
-    c_fax: "",
-    c_email: "",
-    c_crlimit: 0,
-    c_terms: 0,
-    c_contact: "",
-    c_post: "",
-    c_isbranch: false,
-    c_glcode: "",
-    c_branch: "",
-    c_isposmember: false,
-    c_area: "",
-  },
-];
+} from '@chakra-ui/react';
+import { IconSend, IconDoorExit } from '@tabler/icons-react';
+import { useCustomers } from '../react-query/customers/useCustomers';
+import { useAddAuditlog } from '../react-query/auditlog/useAddAuditlog';
+import GetLocalUser from '../helpers/GetLocalUser';
 
 const CustomerForm = ({
   state,
@@ -104,67 +31,64 @@ const CustomerForm = ({
   onCustClose,
 }) => {
   const isFetching = useIsFetching();
-  const navigate = useNavigate();
-  const field_width = "150";
-  const field_gap = "3";
+  const field_width = '150';
+  const field_gap = '3';
   const { customers } = useCustomers();
   const addAuditlog = useAddAuditlog();
   const localuser = GetLocalUser();
 
   const {
     handleSubmit,
-    register,
+
     control,
-    reset,
-    formState: { errors, isSubmitting, id },
+
+    formState: { isSubmitting },
   } = useForm({
     defaultValues: {
       ...state,
     },
   });
 
-  const onSubmit = (values) => {
-    //console.log('status', statustype);
-    //console.log('values', values);
-    if (statustype === "edit") {
+  const onSubmit = values => {
+    if (statustype === 'edit') {
       //add to auditlog
       const auditdata = {
         al_userid: localuser.userid,
         al_user: localuser.name,
-        al_date: dayjs().format("YYYY-MM-DD"),
-        al_time: dayjs().format("HHmmss"),
-        al_timestr: dayjs().format("HH:mm:ss"),
-        al_module: "Customers",
-        al_action: "Update",
+        al_date: dayjs().format('YYYY-MM-DD'),
+        al_time: dayjs().format('HHmmss'),
+        al_timestr: dayjs().format('HH:mm:ss'),
+        al_module: 'Customers',
+        al_action: 'Update',
         al_record: values.c_custno,
-        al_remark: "Successful",
+        al_remark: 'Successful',
       };
       addAuditlog(auditdata);
       // update item
       update_Cust(values);
       onCustClose();
     }
-    if (statustype === "add") {
+    if (statustype === 'add') {
       const { c_custno } = values;
-      const found = customers.some((el) => el.c_custno === c_custno);
+      const found = customers.some(el => el.c_custno === c_custno);
       if (found) {
         Toast({
           title: `This customer no ${c_custno} is existed !`,
-          status: "warning",
-          customId: "custadd",
+          status: 'warning',
+          customId: 'custadd',
         });
       } else {
         //add to auditlog
         const auditdata = {
           al_userid: localuser.userid,
           al_user: localuser.name,
-          al_date: dayjs().format("YYYY-MM-DD"),
-          al_time: dayjs().format("HHmmss"),
-          al_timestr: dayjs().format("HH:mm:ss"),
-          al_module: "Customers",
-          al_action: "Add",
+          al_date: dayjs().format('YYYY-MM-DD'),
+          al_time: dayjs().format('HHmmss'),
+          al_timestr: dayjs().format('HH:mm:ss'),
+          al_module: 'Customers',
+          al_action: 'Add',
           al_record: values.c_custno,
-          al_remark: "Successful",
+          al_remark: 'Successful',
         };
         addAuditlog(auditdata);
         // update item
@@ -180,22 +104,22 @@ const CustomerForm = ({
 
   return (
     <Flex
-      h={{ base: "auto", md: "auto" }}
+      h={{ base: 'auto', md: 'auto' }}
       py={[0, 0, 0]}
-      direction={{ base: "column-reverse", md: "row" }}
+      direction={{ base: 'column-reverse', md: 'row' }}
       overflowY="scroll"
     >
       <VStack
-        w={{ base: "auto", md: "full" }}
-        h={{ base: "auto", md: "full" }}
+        w={{ base: 'auto', md: 'full' }}
+        h={{ base: 'auto', md: 'full' }}
         p="2"
         spacing="10"
         //alignItems="flex-start"
       >
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid templateColumns={"repeat(4,1fr)"} columnGap={3} pb={2}>
+          <Grid templateColumns={'repeat(4,1fr)'} columnGap={3} pb={2}>
             <GridItem colSpan={2}>
-              <VStack alignItems={"flex-start"} px={1}>
+              <VStack alignItems={'flex-start'} px={1}>
                 <Heading size="lg">Customer Form</Heading>
                 <Divider border="2px solid teal" w={250} />
               </VStack>
@@ -204,7 +128,7 @@ const CustomerForm = ({
             <GridItem>
               <ButtonGroup>
                 <Button
-                  variant={"outline"}
+                  variant={'outline'}
                   size="lg"
                   colorScheme="teal"
                   isLoading={isSubmitting}
@@ -216,7 +140,7 @@ const CustomerForm = ({
                   Submit
                 </Button>
                 <Button
-                  variant={"outline"}
+                  variant={'outline'}
                   size="lg"
                   colorScheme="teal"
                   isLoading={isSubmitting}
@@ -234,7 +158,7 @@ const CustomerForm = ({
             rowGap={3}
             px={5}
             py={2}
-            w={{ base: "auto", md: "full", lg: "full" }}
+            w={{ base: 'auto', md: 'full', lg: 'full' }}
             border="1px solid teal"
             borderRadius="20"
             //backgroundColor="blue.50"
@@ -258,7 +182,6 @@ const CustomerForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="customer no"
                           minWidth="100"
@@ -269,41 +192,7 @@ const CustomerForm = ({
                 />
               </FormControl>
             </GridItem>
-            {/*   <GridItem colSpan={5} mt={field_gap}>
-              <FormControl>
-                <Controller
-                  control={control}
-                  name="c_type"
-                  defaultValue={state.c_type}
-                  render={({ field: { onChange, value, ref } }) => (
-                    <InputGroup>
-                      <HStack w="100%" py={1}>
-                        <InputLeftAddon
-                          children="Type"
-                          minWidth={field_width}
-                        />
-                        <Select
-                          name="c_type"
-                          value={value}
-                          width="full"
-                          onChange={onChange}
-                          borderColor="gray.400"
-                          //textTransform="capitalize"
-                          ref={ref}
-                          //placeholder="customer no"
-                          minWidth="100"
-                        >
-                          <option value="">None</option>
-                          <option value="Government">Government</option>
-                          <option value="Private">Private</option>
-                          <option value="Private">Proficiency Testing</option>
-                        </Select>
-                      </HStack>
-                    </InputGroup>
-                  )}
-                />
-              </FormControl>
-            </GridItem> */}
+
             <GridItem colSpan={6} mt={field_gap}>
               <FormControl>
                 <Controller
@@ -323,7 +212,6 @@ const CustomerForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="customer name"
                           minWidth="200"
@@ -353,7 +241,6 @@ const CustomerForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="address"
                           minWidth="500"
@@ -383,7 +270,6 @@ const CustomerForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="address"
                         />
@@ -470,7 +356,6 @@ const CustomerForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="phone"
                           minWidth="100"
@@ -497,7 +382,6 @@ const CustomerForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="email"
                           minWidth="100"
@@ -527,7 +411,6 @@ const CustomerForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="contact person"
                         />
@@ -553,7 +436,6 @@ const CustomerForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="fax"
                           minWidth="100"
@@ -584,7 +466,6 @@ const CustomerForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="area"
                         />

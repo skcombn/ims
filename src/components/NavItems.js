@@ -1,33 +1,18 @@
-import React, { useState } from 'react';
 import {
-  Avatar,
   Box,
   Divider,
   Flex,
   Text,
-  IconButton,
-  Button,
-  Heading,
   Stack,
   VStack,
-  Collapse,
   Icon,
   Link,
   Popover,
   PopoverTrigger,
   PopoverContent,
   useColorModeValue,
-  useBreakpointValue,
-  useDisclosure,
 } from '@chakra-ui/react';
-import {
-  HamburgerIcon,
-  CloseIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-} from '@chakra-ui/icons';
-import { NavLink as RouterLink } from 'react-router-dom';
-import { IconHome } from '@tabler/icons-react';
+import { ChevronRightIcon } from '@chakra-ui/icons';
 import { NAV_ITEMS } from './NavItemList';
 
 const NavItems = () => {
@@ -43,7 +28,6 @@ const MenuItems = () => {
   const linkColor = useColorModeValue('white.600', 'black.200');
   const linkHoverColor = useColorModeValue('gray.800', 'white');
   const popoverContentBgColor = useColorModeValue('white', 'gray.800');
-  const [selectitem, setSelectItem] = useState('');
   return (
     <Stack direction={'row'} spacing={4}>
       {NAV_ITEMS.map(navItem => (

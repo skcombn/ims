@@ -1,86 +1,77 @@
-import { IconHome } from "@tabler/icons-react";
+import { IconHome } from '@tabler/icons-react';
 
 export const NAV_ITEMS = [
   {
-    label: "Dashboard",
-    href: "/",
+    label: 'Dashboard',
+    href: '/',
     sublabel: false,
     icon: IconHome,
   },
   {
-    label: "Inventory",
+    label: 'Inventory',
     sublabel: true,
     children: [
       {
-        label: "Items",
-        subLabel: "",
-        href: "/items",
+        label: 'Items',
+        subLabel: '',
+        href: '/items',
       },
     ],
   },
   {
-    label: "Transactions",
+    label: 'Transactions',
     sublabel: true,
     icon: IconHome,
     children: [
       {
-        label: "Purchases",
-        subLabel: "",
-        href: "/purchases",
+        label: 'Purchases',
+        subLabel: '',
+        href: '/purchases',
       },
       {
-        label: "Sales",
-        subLabel: "",
-        href: "/sales",
+        label: 'Sales',
+        subLabel: '',
+        href: '/sales',
       },
       {
-        label: "Adjustment",
-        subLabel: "",
-        href: "/adjustment",
+        label: 'Adjustment',
+        subLabel: '',
+        href: '/adjustment',
       },
     ],
   },
 
   {
-    label: "Tables",
+    label: 'Tables',
     sublabel: true,
     icon: IconHome,
     children: [
       {
-        label: "Customers",
-        subLabel: "",
-        href: "/customers",
-      },
-      {
-        label: "Suppliers",
-        subLabel: "",
-        href: "/suppliers",
-      },
-      /*   {
-        label: 'Item Groups',
+        label: 'Customers',
         subLabel: '',
-        href: '/itemgroups',
-      }, */
-      {
-        label: "Groups",
-        subLabel: "",
-        href: "/groups",
+        href: '/customers',
       },
       {
-        label: "Users",
-        subLabel: "",
-        href: "/users",
+        label: 'Suppliers',
+        subLabel: '',
+        href: '/suppliers',
+      },
+
+      {
+        label: 'Groups',
+        subLabel: '',
+        href: '/groups',
       },
       {
-        label: "Audit Log",
-        subLabel: "",
-        href: "/auditlog",
+        label: 'Users',
+        subLabel: '',
+        href: '/users',
+      },
+      {
+        label: 'Audit Log',
+        subLabel: '',
+        href: '/auditlog',
       },
     ],
   },
-  // {
-  //   label: 'Settings',
-  //   href: '/settings',
-  //   sublabel: false,
-  // },
 ];

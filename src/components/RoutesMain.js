@@ -1,15 +1,5 @@
-import React from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
-import {
-  FiHome,
-  FiTrendingUp,
-  FiCompass,
-  FiStar,
-  FiSettings,
-  FiMenu,
-  FiBell,
-  FiChevronDown,
-} from "react-icons/fi";
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 import {
   Home,
   HomeItems,
@@ -17,32 +7,25 @@ import {
   Customers,
   Item,
   Items,
-  ItemHistory,
   Inventory,
   Suppliers,
-  CustomersListingReport,
-  CustomersListingRptPrint,
   Sales,
   Purchases,
-  SuppliersListingReport,
-  SuppliersListingRptPrint,
   ItemGroup,
   Settings,
   Tables,
   Groups,
-  Staffs,
   TranPOPrint,
   TranSalesPrint,
   TransAdjust,
   TransAdjustForm,
   TransAdjustPrint,
-  Export2PDF,
   Users,
   Auditlog,
   Error,
   PurchasesInvoice,
   SalesInvoice,
-} from "../pages";
+} from '../pages';
 
 const RoutesMain = () => {
   return (
@@ -92,15 +75,6 @@ const RoutesMain = () => {
           </React.Suspense>
         }
       />
-      <Route
-        exact
-        path="/itemhistory"
-        element={
-          <React.Suspense fallback={<>...</>}>
-            <ItemHistory />
-          </React.Suspense>
-        }
-      />
 
       <Route
         exact
@@ -114,24 +88,6 @@ const RoutesMain = () => {
 
       <Route
         exact
-        path="/customerslistingreport"
-        element={
-          <React.Suspense fallback={<>...</>}>
-            <CustomersListingReport />
-          </React.Suspense>
-        }
-      />
-      <Route
-        exact
-        path="/customerslistingrptprint"
-        element={
-          <React.Suspense fallback={<>...</>}>
-            <CustomersListingRptPrint />
-          </React.Suspense>
-        }
-      />
-      <Route
-        exact
         path="/suppliers"
         element={
           <React.Suspense fallback={<>...</>}>
@@ -140,15 +96,6 @@ const RoutesMain = () => {
         }
       />
 
-      <Route
-        exact
-        path="/supplierslistingreport"
-        element={
-          <React.Suspense fallback={<>...</>}>
-            <SuppliersListingReport />
-          </React.Suspense>
-        }
-      />
       <Route
         exact
         path="/purchases"
@@ -182,15 +129,6 @@ const RoutesMain = () => {
         element={
           <React.Suspense fallback={<>...</>}>
             <SalesInvoice />
-          </React.Suspense>
-        }
-      />
-      <Route
-        exact
-        path="/supplierslistingrptprint"
-        element={
-          <React.Suspense fallback={<>...</>}>
-            <SuppliersListingRptPrint />
           </React.Suspense>
         }
       />
@@ -262,15 +200,6 @@ const RoutesMain = () => {
 
       <Route
         exact
-        path="/export2pdf"
-        element={
-          <React.Suspense fallback={<>...</>}>
-            <Export2PDF />
-          </React.Suspense>
-        }
-      />
-      <Route
-        exact
         path="/settings"
         element={
           <React.Suspense fallback={<>...</>}>
@@ -296,15 +225,7 @@ const RoutesMain = () => {
           </React.Suspense>
         }
       />
-      <Route
-        exact
-        path="/staffs"
-        element={
-          <React.Suspense fallback={<>...</>}>
-            <Staffs />
-          </React.Suspense>
-        }
-      />
+
       <Route
         exact
         path="/users"

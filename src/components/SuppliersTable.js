@@ -1,20 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import dayjs from 'dayjs';
-import {
-  Box,
-  Flex,
-  Heading,
-  IconButton,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  //ModalHeader,
-  //ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-} from '@chakra-ui/react';
-import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
+import { Box, Flex, Heading, useDisclosure } from '@chakra-ui/react';
+import { Modal } from '@mantine/core';
 import { AlertDialogBox } from '../helpers/AlertDialogBox';
 import { useSuppliers } from '../react-query/suppliers/useSuppliers';
 import { useAddSupplier } from '../react-query/suppliers/useAddSupplier';
@@ -53,13 +40,6 @@ const SuppliersTable = () => {
   const localuser = GetLocalUser();
   const [state, setState] = useState({});
   const [statustype, setStatusType] = useState('');
-  const [filterText, setFilterText] = React.useState('');
-
-  const filteredData = suppliers.filter(
-    item =>
-      item.s_supp &&
-      item.s_supp.toLowerCase().includes(filterText.toLowerCase())
-  );
 
   const {
     isOpen: isAlertDeleteOpen,
@@ -193,33 +173,15 @@ const SuppliersTable = () => {
           handleDelete={handleDeleteSupp}
         />
       </Box>
-      <Modal
-        closeOnOverlayClick={false}
-        isOpen={isSuppOpen}
-        onClose={onSuppClose}
-        size="4xl"
-      >
-        <ModalOverlay />
-        <ModalContent>
-          {/* <ModalHeader>Product Form</ModalHeader> */}
-          <ModalCloseButton />
-          <ModalBody>
-            <SupplierForm
-              state={state}
-              setState={setState}
-              add_Supp={add_Supp}
-              update_Supp={update_Supp}
-              statustype={statustype}
-              onSuppClose={onSuppClose}
-            />
-          </ModalBody>
-
-          {/* <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onProductClose}>
-              Close
-              </Button>
-          </ModalFooter> */}
-        </ModalContent>
+      <Modal opened={isSuppOpen} onClose={onSuppClose} size="4xl">
+        <SupplierForm
+          state={state}
+          setState={setState}
+          add_Supp={add_Supp}
+          update_Supp={update_Supp}
+          statustype={statustype}
+          onSuppClose={onSuppClose}
+        />
       </Modal>
       <AlertDialogBox
         onClose={onAlertDeleteClose}

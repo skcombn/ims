@@ -1,96 +1,27 @@
-import React, { useState, useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useIsFetching } from "@tanstack/react-query";
-import { formatPrice } from "../helpers/utils";
-import { FiSave } from "react-icons/fi";
-import dayjs from "dayjs";
-import { Toast } from "../helpers/CustomToastify";
-import { useNavigate } from "react-router-dom";
+import { Controller, useForm } from 'react-hook-form';
+import { useIsFetching } from '@tanstack/react-query';
+import dayjs from 'dayjs';
+import { Toast } from '../helpers/CustomToastify';
+import { useNavigate } from 'react-router-dom';
 import {
-  AspectRatio,
-  Box,
   Button,
   ButtonGroup,
-  Center,
-  Checkbox,
-  Container,
   Divider,
   Flex,
   FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   Grid,
   GridItem,
-  Heading,
   HStack,
-  IconButton,
-  Image,
+  Heading,
   Input,
   InputGroup,
   InputLeftAddon,
-  InputLeftElement,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Radio,
-  RadioGroup,
-  Select,
-  SimpleGrid,
-  Stack,
-  StackDivider,
-  Text,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
   VStack,
-  Wrap,
-  WrapItem,
-  useRadio,
-  useRadioGroup,
-  useDisclosure,
-  useColorMode,
-  useColorModeValue,
-  useBreakpointValue,
-} from "@chakra-ui/react";
-import {
-  IconEdit,
-  IconTrash,
-  IconSquareRoundedPlus,
-  IconPlus,
-  IconSend,
-  IconDoorExit,
-} from "@tabler/icons-react";
-import { useSuppliers } from "../react-query/suppliers/useSuppliers";
-import { useAddAuditlog } from "../react-query/auditlog/useAddAuditlog";
-import GetLocalUser from "../helpers/GetLocalUser";
-
-const initial_supp = [
-  {
-    s_suppno: "",
-    s_supp: "",
-    s_add1: "",
-    s_add2: "",
-    s_add3: "",
-    s_add4: "",
-    s_phone: "",
-    s_email: "",
-    s_fax: "",
-    s_contact: "",
-    s_crlimit: 0,
-    s_terms: 0,
-    s_glcode: "",
-    s_branch: "",
-    s_bankname: "",
-    s_bankacno: "",
-  },
-];
+} from '@chakra-ui/react';
+import { IconSend, IconDoorExit } from '@tabler/icons-react';
+import { useSuppliers } from '../react-query/suppliers/useSuppliers';
+import { useAddAuditlog } from '../react-query/auditlog/useAddAuditlog';
+import GetLocalUser from '../helpers/GetLocalUser';
 
 const SupplierForm = ({
   state,
@@ -101,18 +32,15 @@ const SupplierForm = ({
   onSuppClose,
 }) => {
   const isFetching = useIsFetching();
-  const navigate = useNavigate();
-  const field_width = "150";
-  const field_gap = "3";
+  const field_width = '150';
+  const field_gap = '3';
   const { suppliers } = useSuppliers();
   const addAuditlog = useAddAuditlog();
   const localuser = GetLocalUser();
 
   const {
     handleSubmit,
-    register,
     control,
-    reset,
     formState: { errors, isSubmitting, id },
   } = useForm({
     defaultValues: {
@@ -120,46 +48,46 @@ const SupplierForm = ({
     },
   });
 
-  const onSubmit = (values) => {
-    if (statustype === "edit") {
+  const onSubmit = values => {
+    if (statustype === 'edit') {
       //add to auditlog
       const auditdata = {
         al_userid: localuser.userid,
         al_user: localuser.name,
-        al_date: dayjs().format("YYYY-MM-DD"),
-        al_time: dayjs().format("HHmmss"),
-        al_timestr: dayjs().format("HH:mm:ss"),
-        al_module: "Suppliers",
-        al_action: "Update",
+        al_date: dayjs().format('YYYY-MM-DD'),
+        al_time: dayjs().format('HHmmss'),
+        al_timestr: dayjs().format('HH:mm:ss'),
+        al_module: 'Suppliers',
+        al_action: 'Update',
         al_record: state.s_suppno,
-        al_remark: "Successful",
+        al_remark: 'Successful',
       };
       addAuditlog(auditdata);
       // update
       update_Supp(values);
       onSuppClose();
     }
-    if (statustype === "add") {
+    if (statustype === 'add') {
       const { s_suppno } = values;
-      const found = suppliers.some((el) => el.s_suppno === s_suppno);
+      const found = suppliers.some(el => el.s_suppno === s_suppno);
       if (found) {
         Toast({
           title: `This supplier no ${s_suppno} is existed !`,
-          status: "warning",
-          customId: "manuadd",
+          status: 'warning',
+          customId: 'manuadd',
         });
       } else {
         //add to auditlog
         const auditdata = {
           al_userid: localuser.userid,
           al_user: localuser.name,
-          al_date: dayjs().format("YYYY-MM-DD"),
-          al_time: dayjs().format("HHmmss"),
-          al_timestr: dayjs().format("HH:mm:ss"),
-          al_module: "Suppliers",
-          al_action: "Add",
+          al_date: dayjs().format('YYYY-MM-DD'),
+          al_time: dayjs().format('HHmmss'),
+          al_timestr: dayjs().format('HH:mm:ss'),
+          al_module: 'Suppliers',
+          al_action: 'Add',
           al_record: state.s_suppno,
-          al_remark: "Successful",
+          al_remark: 'Successful',
         };
         addAuditlog(auditdata);
         // add
@@ -175,22 +103,22 @@ const SupplierForm = ({
 
   return (
     <Flex
-      h={{ base: "auto", md: "auto" }}
+      h={{ base: 'auto', md: 'auto' }}
       py={[0, 0, 0]}
-      direction={{ base: "column-reverse", md: "row" }}
+      direction={{ base: 'column-reverse', md: 'row' }}
       overflowY="scroll"
     >
       <VStack
-        w={{ base: "auto", md: "full" }}
-        h={{ base: "auto", md: "full" }}
+        w={{ base: 'auto', md: 'full' }}
+        h={{ base: 'auto', md: 'full' }}
         p="2"
         spacing="10"
         //alignItems="flex-start"
       >
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid templateColumns={"repeat(4,1fr)"} columnGap={3} pb={2}>
+          <Grid templateColumns={'repeat(4,1fr)'} columnGap={3} pb={2}>
             <GridItem colSpan={2}>
-              <VStack alignItems={"flex-start"} px={1}>
+              <VStack alignItems={'flex-start'} px={1}>
                 <Heading size="lg">Supplier Form</Heading>
                 <Divider border="2px solid teal" w={250} />
               </VStack>
@@ -199,7 +127,7 @@ const SupplierForm = ({
             <GridItem>
               <ButtonGroup>
                 <Button
-                  variant={"outline"}
+                  variant={'outline'}
                   size="lg"
                   colorScheme="teal"
                   isLoading={isSubmitting}
@@ -211,7 +139,7 @@ const SupplierForm = ({
                   Submit
                 </Button>
                 <Button
-                  variant={"outline"}
+                  variant={'outline'}
                   size="lg"
                   colorScheme="teal"
                   isLoading={isSubmitting}
@@ -229,7 +157,7 @@ const SupplierForm = ({
             rowGap={3}
             px={5}
             py={2}
-            w={{ base: "auto", md: "full", lg: "full" }}
+            w={{ base: 'auto', md: 'full', lg: 'full' }}
             border="1px solid blue"
             borderRadius="15"
           >
@@ -252,7 +180,6 @@ const SupplierForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="supplier no"
                           minWidth="100"
@@ -282,7 +209,6 @@ const SupplierForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="supplier name"
                           minWidth="200"
@@ -312,7 +238,6 @@ const SupplierForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="address"
                           minWidth="500"
@@ -342,7 +267,6 @@ const SupplierForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="address"
                         />
@@ -371,7 +295,6 @@ const SupplierForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="address"
                         />
@@ -400,7 +323,6 @@ const SupplierForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="address"
                         />
@@ -429,7 +351,6 @@ const SupplierForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="phone"
                           minWidth="100"
@@ -456,7 +377,6 @@ const SupplierForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="email"
                           minWidth="100"
@@ -486,7 +406,6 @@ const SupplierForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="contact person"
                         />
@@ -512,7 +431,6 @@ const SupplierForm = ({
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="fax"
                           minWidth="100"
@@ -524,28 +442,6 @@ const SupplierForm = ({
               </FormControl>
             </GridItem>
           </Grid>
-          {/*  <Box>
-            <Center>
-              <Button
-                mt={4}
-                ml={4}
-                colorScheme="teal"
-                isLoading={isSubmitting}
-                type="submit"
-              >
-                Submit
-              </Button>
-              <Button
-                mt={4}
-                ml={10}
-                colorScheme="teal"
-                isLoading={isSubmitting}
-                onClick={handleExit}
-              >
-                Close
-              </Button>
-            </Center>
-          </Box> */}
         </form>
       </VStack>
     </Flex>

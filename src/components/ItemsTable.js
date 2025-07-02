@@ -1,25 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { formatNumber, formatCurrency } from '../helpers/utils';
-import {
-  Box,
-  Flex,
-  Heading,
-  IconButton,
-  useDisclosure,
-} from '@chakra-ui/react';
-import { Modal, NumberInput } from '@mantine/core';
+import { Box, Flex, Heading, useDisclosure } from '@chakra-ui/react';
+import { Modal } from '@mantine/core';
 import { useRecoilState } from 'recoil';
-import {
-  itemState,
-  // itemAttachmentState,
-  editItemIdState,
-} from '../data/atomdata';
-//import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
-import { BiEditAlt } from 'react-icons/bi';
-import { MdDelete } from 'react-icons/md';
-//import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { itemState, editItemIdState } from '../data/atomdata';
 import { AlertDialogBox } from '../helpers/AlertDialogBox';
 import { useItems } from '../react-query/items/useItems';
 import { useAddItem } from '../react-query/items/useAddItem';
@@ -80,8 +66,6 @@ const ItemsTable = ({ type }) => {
   const addAuditlog = useAddAuditlog();
   const localuser = GetLocalUser();
   const [state, setState] = useRecoilState(itemState);
-  //const [statustype, setStatusType] = useState('');
-  // const [attachments, setAttachments] = useRecoilState(itemAttachmentState);
   const [editItemId, setEditItemId] = useRecoilState(editItemIdState);
 
   const {
@@ -185,15 +169,6 @@ const ItemsTable = ({ type }) => {
           align: 'right',
         },
       },
-
-      /*  {
-        header: "Supplier",
-        accessorFn: (row) => row.item_manufacturer,
-        //size: 200,
-        mantineTableBodyCellProps: {
-          align: "left",
-        },
-      }, */
       {
         header: 'Category No',
         accessorFn: row => row.item_cat,
@@ -244,7 +219,6 @@ const ItemsTable = ({ type }) => {
       itemshistory
         .filter(r => r.it_itemno === state.item_no)
         .forEach(rec => {
-          const { id } = rec;
           deleteItemsHistory(rec);
         });
     //delete item expiry
@@ -252,7 +226,6 @@ const ItemsTable = ({ type }) => {
       itemsexpiry
         .filter(r => r.ie_itemno === state.item_no)
         .forEach(rec => {
-          const { id } = rec;
           deleteItemExpiry(rec);
         });
   };
@@ -269,7 +242,6 @@ const ItemsTable = ({ type }) => {
         })
     );
     const data = { ...initial_item, item_type: type };
-    // setAttachments((prev) => []);
     setState(data);
 
     navigate('/item');
@@ -283,13 +255,6 @@ const ItemsTable = ({ type }) => {
       prev => (prev = { id: item_id, no: item_no, type: type, status: 'edit' })
     );
     setState(prev => original);
-    /*  setAttachments(
-      (prev) =>
-        (prev = itemsattachments.filter(
-          (r) => r.ia_itemno === original.item_no
-        ))
-    ); */
-    //onItemOpen(true);
     navigate('/item');
   };
 
@@ -299,40 +264,12 @@ const ItemsTable = ({ type }) => {
     onAlertDeleteOpen();
   };
 
-  const handleDeleteAttachment = rowData => {
-    setState(prev => (prev = { ...rowData }));
-    //onAlertDeleteAttachmentOpen();
-  };
-
-  const handleOnDeleteAttachmentConfirm = () => {
-    //deleteItemAttachment(state);
-  };
   const add_Item = data => {
-    //console.log('add', data);
     addItem(data);
-
-    /*  attachments.forEach((rec) => {
-      const { ia_id, ...fields } = rec;
-      addItemAttachment({ ...fields, ia_itemno: data.item_no });
-    }); */
   };
 
   const update_Item = data => {
     updateItem(data);
-    //delete attachments
-    /*  itemsattachments
-      .filter((r) => r.ia_itemno === data.item_no)
-      .forEach((rec) => {
-        deleteItemAttachment({ ...rec });
-      }); */
-    /*   attachments.forEach((rec) => {
-      const { ia_id, ...fields } = rec;
-      addItemAttachment(fields);
-    }); */
-  };
-
-  const add_ItemAttachment = data => {
-    //addItemAttachment(data);
   };
 
   const handleExportExcel = rows => {
@@ -392,7 +329,7 @@ const ItemsTable = ({ type }) => {
       al_remark: 'Successful',
     };
     addAuditlog(auditdata);
-    const tableHeaders = columns.map(c => c.header);
+    //const tableHeaders = columns.map(c => c.header);
     //const rowData = rows.map(row => row.original);
     const rowData = rows.map(row => [
       row.original.item_no,
@@ -492,16 +429,6 @@ const ItemsTable = ({ type }) => {
           {state.item_desp} ?
         </Heading>
       </AlertDialogBox>
-      {/*   <AlertDialogBox
-        onClose={onAlertDeleteAttachmentClose}
-        onConfirm={handleOnDeleteAttachmentConfirm}
-        isOpen={isAlertDeleteAttachmentOpen}
-        title="Delete Item Attachment"
-      >
-        <Heading size="md">
-          Are you sure you want to delete this item attachment{state.ia_name} ?
-        </Heading>
-      </AlertDialogBox> */}
     </Flex>
   );
 };

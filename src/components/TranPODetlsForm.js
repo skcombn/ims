@@ -1,70 +1,29 @@
-import React, { useState, useEffect } from "react";
-import { useIsFetching } from "@tanstack/react-query";
-import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import { Controller, useForm } from "react-hook-form";
-import { Toast } from "../helpers/CustomToastify";
-import { FiSave } from "react-icons/fi";
-import { AiOutlineSearch } from "react-icons/ai";
-import { ImExit } from "react-icons/im";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { useIsFetching } from '@tanstack/react-query';
+import { Controller, useForm } from 'react-hook-form';
+import { Toast } from '../helpers/CustomToastify';
+import { AiOutlineSearch } from 'react-icons/ai';
 import {
-  AspectRatio,
   Box,
   Button,
   ButtonGroup,
-  Center,
-  Checkbox,
-  Container,
   Divider,
   Flex,
   FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   Grid,
   GridItem,
   Heading,
   HStack,
   IconButton,
-  Image,
   Input,
   InputGroup,
   InputLeftAddon,
-  InputLeftElement,
-  Radio,
-  RadioGroup,
-  Select,
-  SimpleGrid,
-  Stack,
-  StackDivider,
-  //Text,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
   VStack,
-  Wrap,
-  WrapItem,
-  useRadio,
-  useRadioGroup,
   useDisclosure,
-  useColorMode,
-  useColorModeValue,
-  useBreakpointValue,
-} from "@chakra-ui/react";
-import { Modal, NumberInput, ActionIcon, Text, Tooltip } from "@mantine/core";
-import {
-  IconEdit,
-  IconTrash,
-  IconSquareRoundedPlus,
-  IconPlus,
-  IconSend,
-  IconDoorExit,
-} from "@tabler/icons-react";
-import { useItems } from "../react-query/items/useItems";
-import CustomReactTable from "../helpers/CustomReactTable";
-import ItemSearchTable from "./ItemSearchTable";
+} from '@chakra-ui/react';
+import { Modal, NumberInput } from '@mantine/core';
+import { IconSend, IconDoorExit } from '@tabler/icons-react';
+import ItemSearchTable from './ItemSearchTable';
 
 const TranPODetlsForm = ({
   state,
@@ -75,22 +34,13 @@ const TranPODetlsForm = ({
   onItemClose,
 }) => {
   const isFetching = useIsFetching();
-  const navigate = useNavigate();
-  const field_width = "150";
-  const field_gap = "3";
+  const field_width = '150';
+  const field_gap = '3';
   const [qty, setQty] = useState(state.tl_qty);
   const [ucost, setUCost] = useState(state.tl_netucost);
   const [isexpirydate, setIsExpiryDate] = useState(state.tl_trackexpiry);
-  const [isCalc, setIsCalc] = useState(true);
-  const [serialno, setSerialNo] = useState("");
-  const [serialnorec, setSerialNoRec] = useState({});
-  /* const [trackserial, setTrackSerial] = useState(state.tl_trackserial);
-  const [editserialnoId, setEditSerialNoId] = useState({
-    id: "",
-    status: "add",
-  }); */
 
-  console.log("batchdetls state", state);
+  console.log('batchdetls state', state);
 
   const {
     isOpen: isSearchOpen,
@@ -99,34 +49,17 @@ const TranPODetlsForm = ({
   } = useDisclosure();
 
   const {
-    isOpen: isAlertDeleteOpen,
-    onOpen: onAlertDeleteOpen,
-    onClose: onAlertDeleteClose,
-  } = useDisclosure();
-
-  const {
     handleSubmit,
-    register,
     control,
-    reset,
     setValue,
-    getValues,
-    formState: { errors, isSubmitting, id },
+    formState: { isSubmitting },
   } = useForm({
     defaultValues: {
       ...state,
     },
   });
 
-  /*  const serialcolumns = [
-    {
-      header: "Serial No",
-      accessorKey: "ts_serialno",
-      enableEditing: false,
-    },
-  ]; */
-
-  const onSubmit = (values) => {
+  const onSubmit = values => {
     let lValid = false;
     //check for expiry item
     if (isexpirydate) {
@@ -137,23 +70,23 @@ const TranPODetlsForm = ({
       }
       if (lValid === false) {
         Toast({
-          title: "Lot No field can not be blank!",
-          status: "warning",
-          customId: "lotnoErr",
+          title: 'Lot No field can not be blank!',
+          status: 'warning',
+          customId: 'lotnoErr',
         });
       } else {
-        if (statustype === "edit") {
+        if (statustype === 'edit') {
           update_Item(values);
         }
-        if (statustype === "add") {
+        if (statustype === 'add') {
           add_Item(values);
         }
       }
     } else {
-      if (statustype === "edit") {
+      if (statustype === 'edit') {
         update_Item(values);
       }
-      if (statustype === "add") {
+      if (statustype === 'add') {
         add_Item(values);
       }
     }
@@ -164,8 +97,8 @@ const TranPODetlsForm = ({
     onItemClose();
   };
 
-  const update_ItemDetls = (data) => {
-    console.log("upditem", data);
+  const update_ItemDetls = data => {
+    console.log('upditem', data);
     const {
       item_no,
       item_desp,
@@ -174,15 +107,15 @@ const TranPODetlsForm = ({
       item_cost,
       item_trackexpiry,
     } = data;
-    setValue("tl_itemno", item_no);
-    setValue("tl_desp", item_desp);
-    setValue("tl_packing", item_pack);
-    setValue("tl_unit", item_unit);
-    setValue("tl_ucost", item_cost);
-    setValue("tl_netucost", item_cost);
-    setValue("tl_trackexpiry", item_trackexpiry);
-    setQty((prev) => (prev = 0));
-    setUCost((prev) => (prev = item_cost));
+    setValue('tl_itemno', item_no);
+    setValue('tl_desp', item_desp);
+    setValue('tl_packing', item_pack);
+    setValue('tl_unit', item_unit);
+    setValue('tl_ucost', item_cost);
+    setValue('tl_netucost', item_cost);
+    setValue('tl_trackexpiry', item_trackexpiry);
+    setQty(prev => (prev = 0));
+    setUCost(prev => (prev = item_cost));
     setIsExpiryDate(item_trackexpiry);
     // setTrackSerial(item_trackserial);
   };
@@ -191,86 +124,30 @@ const TranPODetlsForm = ({
     onSearchOpen();
   };
 
-  /*  const handleAddSerialItem = () => {
-    if (editserialnoId.status === "edit") {
-      const oldData = serialstate.filter((r) => r.ts_id !== editserialnoId.id);
-      const newRec = {
-        ...serialnorec,
-        ts_serialno: serialno,
-      };
-      setSerialState((prev) => (prev = [...oldData, newRec]));
-    } else {
-      const itemno = getValues("tl_itemno");
-      const newRec = {
-        ts_serialno: serialno,
-        ts_trantype: state.tl_trantype,
-        ts_itemno: itemno,
-        ts_post: "0",
-      };
-      setSerialState((prev) => (prev = [...serialstate, newRec]));
-    }
-    setIsCalc(true);
-    setSerialNo((prev) => (prev = ""));
-  }; */
-
-  /* const handleClearSerialItem = () => {
-    setSerialNo((prev) => (prev = ""));
-  }; */
-
-  /*  const handleEditSerialItem = (data) => {
-    const { original } = data;
-    setSerialNoRec((prev) => (prev = original));
-    setSerialNo((prev) => (prev = original.ts_serialno));
-    setEditSerialNoId(
-      (prev) => (prev = { id: original.ts_id, status: "edit" })
-    );
-  }; */
-
-  /*  const handleDeleteSerialItem = (data) => {
-    const { original } = data;
-    const updData = serialstate.filter((r) => r.ts_id != original.ts_id);
-    setSerialState(updData);
-    setSerialNo((prev) => (prev = ""));
-    setIsCalc(true);
-  }; */
-
-  /*  const handleCalc = () => {
-    const totrec = serialstate.reduce((acc, rec) => {
-      return acc + 1;
-    }, 0);
-    setQty(totrec);
-    setValue("tl_qty", totrec);
-    setIsCalc(false);
-  }; */
-
   useEffect(() => {
     const amt = Math.round(qty * ucost, 2);
-    setValue("tl_amount", amt);
-    console.log("recalc", amt, qty, ucost);
+    setValue('tl_amount', amt);
+    console.log('recalc', amt, qty, ucost);
   }, [qty, ucost]);
-
-  /*  useEffect(() => {
-    handleCalc();
-  }, [isCalc]); */
 
   return (
     <Flex
-      h={{ base: "auto", md: "auto" }}
+      h={{ base: 'auto', md: 'auto' }}
       py={[0, 0, 0]}
-      direction={{ base: "column-reverse", md: "row" }}
+      direction={{ base: 'column-reverse', md: 'row' }}
       overflowY="scroll"
     >
       <VStack
-        w={{ base: "auto", md: "full" }}
-        h={{ base: "auto", md: "full" }}
+        w={{ base: 'auto', md: 'full' }}
+        h={{ base: 'auto', md: 'full' }}
         p="2"
         spacing="10"
         //alignItems="flex-start"
       >
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid templateColumns={"repeat(4,1fr)"} columnGap={3} pb={2}>
+          <Grid templateColumns={'repeat(4,1fr)'} columnGap={3} pb={2}>
             <GridItem colSpan={2}>
-              <VStack alignItems={"flex-start"} px={1}>
+              <VStack alignItems={'flex-start'} px={1}>
                 <Heading size="lg">Details Form</Heading>
                 <Divider border="2px solid teal" w={250} />
               </VStack>
@@ -279,7 +156,7 @@ const TranPODetlsForm = ({
             <GridItem>
               <ButtonGroup>
                 <Button
-                  variant={"outline"}
+                  variant={'outline'}
                   size="lg"
                   colorScheme="teal"
                   isLoading={isSubmitting}
@@ -291,7 +168,7 @@ const TranPODetlsForm = ({
                   Submit
                 </Button>
                 <Button
-                  variant={"outline"}
+                  variant={'outline'}
                   size="lg"
                   colorScheme="teal"
                   isLoading={isSubmitting}
@@ -310,7 +187,7 @@ const TranPODetlsForm = ({
             rowGap={3}
             px={5}
             py={2}
-            w={{ base: "auto", md: "full", lg: "full" }}
+            w={{ base: 'auto', md: 'full', lg: 'full' }}
             border="1px solid teal"
             borderRadius="10"
           >
@@ -330,11 +207,10 @@ const TranPODetlsForm = ({
                           />
                           <Input
                             name="tl_itemno"
-                            value={value || ""}
+                            value={value || ''}
                             width="full"
                             onChange={onChange}
                             borderColor="gray.400"
-                            //textTransform="capitalize"
                             ref={ref}
                             placeholder="item no"
                             minWidth="100"
@@ -369,11 +245,10 @@ const TranPODetlsForm = ({
                         />
                         <Input
                           name="tl_desp"
-                          value={value || ""}
+                          value={value || ''}
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="item description"
                           minWidth="200"
@@ -399,11 +274,10 @@ const TranPODetlsForm = ({
                         />
                         <Input
                           name="tl_packing"
-                          value={value || ""}
+                          value={value || ''}
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="item packing"
                           minWidth="500"
@@ -428,26 +302,21 @@ const TranPODetlsForm = ({
                           name="tl_qty"
                           value={value || 0}
                           precision={2}
-                          //fixedDecimalScale
-                          parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-                          formatter={(value) =>
+                          parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                          formatter={value =>
                             !Number.isNaN(parseFloat(value))
                               ? ` ${value}`.replace(
                                   /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
-                                  ","
+                                  ','
                                 )
-                              : " "
+                              : ' '
                           }
                           width="50%"
-                          onChange={(e) => {
+                          onChange={e => {
                             onChange(e);
-                            setQty((prev) => (prev = e));
+                            setQty(prev => (prev = e));
                           }}
-                          //borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
-                          //placeholder="qty"
-                          //readOnly={trackserial}
                         />
                       </HStack>
                     </InputGroup>
@@ -455,34 +324,7 @@ const TranPODetlsForm = ({
                 />
               </FormControl>
             </GridItem>
-            {/*  <GridItem colSpan={3} mt={field_gap}>
-              <FormControl>
-                <Controller
-                  control={control}
-                  name="tl_trackserial"
-                  defaultValue={trackserial}
-                  render={({ field: { onChange, value, ref } }) => (
-                    <Checkbox
-                      name="tl_trackserial"
-                      value={value || false}
-                      width="full"
-                      label="Track Serial"
-                      checked={trackserial}
-                      size="lg"
-                      onChange={(e) => {
-                        onChange(e.target.checked);
-                        setTrackSerial(e.target.checked);
-                      }}
-                      borderColor="gray.400"
-                      //textTransform="capitalize"
-                      ref={ref}
-                      //placeholder="item packing"
-                      //minWidth="500"
-                    />
-                  )}
-                />
-              </FormControl>
-            </GridItem> */}
+
             <GridItem colSpan={9} mt={field_gap}>
               <FormControl>
                 <Controller
@@ -498,11 +340,10 @@ const TranPODetlsForm = ({
                         />
                         <Input
                           name="tl_unit"
-                          value={value || ""}
+                          value={value || ''}
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="unit"
                         />
@@ -529,25 +370,21 @@ const TranPODetlsForm = ({
                           name="tl_netucost"
                           value={value || 0}
                           precision={2}
-                          //fixedDecimalScale
-                          parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-                          formatter={(value) =>
+                          parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                          formatter={value =>
                             !Number.isNaN(parseFloat(value))
                               ? `$ ${value}`.replace(
                                   /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
-                                  ","
+                                  ','
                                 )
-                              : "$ "
+                              : '$ '
                           }
                           width="full"
-                          onChange={(e) => {
+                          onChange={e => {
                             onChange(e);
-                            setUCost((prev) => (prev = e));
+                            setUCost(prev => (prev = e));
                           }}
-                          //borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
-                          //placeholder="unit cost"
                         />
                       </HStack>
                     </InputGroup>
@@ -572,22 +409,18 @@ const TranPODetlsForm = ({
                           name="tl_amount"
                           value={value || 0}
                           precision={2}
-                          //fixedDecimalScale
-                          parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-                          formatter={(value) =>
+                          parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                          formatter={value =>
                             !Number.isNaN(parseFloat(value))
                               ? `$ ${value}`.replace(
                                   /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
-                                  ","
+                                  ','
                                 )
-                              : "$ "
+                              : '$ '
                           }
                           width="full"
                           onChange={onChange}
-                          //borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
-                          //placeholder="amount"
                         />
                       </HStack>
                     </InputGroup>
@@ -613,11 +446,10 @@ const TranPODetlsForm = ({
                             />
                             <Input
                               name="tl_lotno"
-                              value={value || ""}
+                              value={value || ''}
                               width="full"
                               onChange={onChange}
                               borderColor="gray.400"
-                              //textTransform="capitalize"
                               ref={ref}
                               placeholder="lot no"
                             />
@@ -643,12 +475,11 @@ const TranPODetlsForm = ({
                             />
                             <Input
                               name="tl_dateexpiry"
-                              value={value || ""}
+                              value={value || ''}
                               type="date"
                               width="full"
                               onChange={onChange}
                               borderColor="gray.400"
-                              //textTransform="capitalize"
                               ref={ref}
                               placeholder="Expiry Date"
                             />
@@ -660,36 +491,7 @@ const TranPODetlsForm = ({
                 </GridItem>
               </>
             )}
-            {/* 
-            <GridItem colSpan={9} mt={field_gap}>
-              <FormControl>
-                <Controller
-                  control={control}
-                  name="tl_location"
-                  defaultValue={state.tl_location}
-                  render={({ field: { onChange, value, ref } }) => (
-                    <InputGroup>
-                      <HStack w="100%" py={1}>
-                        <InputLeftAddon
-                          children="Location"
-                          minWidth={field_width}
-                        />
-                        <Input
-                          name="tl_location"
-                          value={value || ''}
-                          width="full"
-                          onChange={onChange}
-                          borderColor="gray.400"
-                          //textTransform="capitalize"
-                          ref={ref}
-                          placeholder="location"
-                        />
-                      </HStack>
-                    </InputGroup>
-                  )}
-                />
-              </FormControl>
-            </GridItem> */}
+
             <GridItem colSpan={9} mt={field_gap}>
               <FormControl>
                 <Controller
@@ -705,11 +507,10 @@ const TranPODetlsForm = ({
                         />
                         <Input
                           name="tl_remark"
-                          value={value || ""}
+                          value={value || ''}
                           width="full"
                           onChange={onChange}
                           borderColor="gray.400"
-                          //textTransform="capitalize"
                           ref={ref}
                           placeholder="remark"
                         />
@@ -719,78 +520,6 @@ const TranPODetlsForm = ({
                 />
               </FormControl>
             </GridItem>
-            {/*  {trackserial && (
-              <GridItem colSpan={9}>
-                <Grid templateColumns={"repeat(6,1fr)"} columnGap={3} pb={2}>
-                  <GridItem colSpan={6}>
-                    <Divider border="2px solid teal" />
-                  </GridItem>
-                  <GridItem colSpan={2}>
-                    <HStack>
-                      <InputGroup>
-                        <HStack w="100%" py={1}>
-                          <VStack align="left">
-                            <Text as="b" fontSize="sm">
-                              Serial No
-                            </Text>
-                            <Input
-                              name="ts_serialno"
-                              value={serialno}
-                              width="full"
-                              onChange={(e) => {
-                                setSerialNo(e.target.value);
-                              }}
-                             
-                              borderColor="gray.400"
-                              //textTransform="capitalize"
-                              placeholder="serial no"
-                              //minWidth="100"
-                              autoComplete="off"
-                              isRequired
-                            />
-                          </VStack>
-                        </HStack>
-                      </InputGroup>
-                    </HStack>
-                  </GridItem>
-                  <GridItem colSpan={2}>
-                    <Box>
-                      <ButtonGroup mt={8}>
-                        <Button
-                          colorScheme="teal"
-                          onClick={handleAddSerialItem}
-                          //isDisabled={state.std_itemno.length < 5}
-                        >
-                          Add
-                        </Button>
-                        <Button
-                          colorScheme="teal"
-                          onClick={handleClearSerialItem}
-                        >
-                          Clear
-                        </Button>
-                      </ButtonGroup>
-                    </Box>
-                  </GridItem>
-
-                  <GridItem colSpan={6}>
-                    <CustomReactTable
-                      title="Serial No"
-                      columns={serialcolumns}
-                      data={serialstate}
-                      //handleAdd={handleAddState}
-                      handleEdit={handleEditSerialItem}
-                      handleDelete={handleDeleteSerialItem}
-                      disableAddStatus={true}
-                      disableExportStatus={true}
-                      initialState={{
-                        sorting: [{ id: "ts_serialno", desc: false }],
-                      }}
-                    />
-                  </GridItem>
-                </Grid>
-              </GridItem>
-            )} */}
           </Grid>
         </form>
       </VStack>
@@ -799,10 +528,8 @@ const TranPODetlsForm = ({
         <ItemSearchTable
           state={state}
           setState={setState}
-          //add_Item={add_InvDetls}
           update_Item={update_ItemDetls}
           statustype={statustype}
-          //setStatusType={setStatusType}
           onItemSearchClose={onSearchClose}
         />
       </Modal>

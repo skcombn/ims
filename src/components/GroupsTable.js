@@ -1,12 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-
-import {
-  Box,
-  Flex,
-  Heading,
-  IconButton,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { useState, useMemo } from 'react';
+import { Box, Flex, Heading, useDisclosure } from '@chakra-ui/react';
 import { Modal } from '@mantine/core';
 import { AlertDialogBox } from '../helpers/AlertDialogBox';
 import { useGroups } from '../react-query/groups/useGroups';
@@ -20,8 +13,6 @@ const initial_group = {
   group_desp: '',
   group_category: '',
 };
-
-const initial_selection = [{ name: 'ALL', field: 'all' }];
 
 const GroupsTable = () => {
   const { groups, setGroupId } = useGroups();
@@ -99,10 +90,6 @@ const GroupsTable = () => {
     updateGroup(data);
     onGroupClose();
   };
-
-  /* useEffect(() => {
-    build_selection();
-  }, [groups]); */
 
   return (
     <Flex p={5}>

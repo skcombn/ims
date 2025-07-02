@@ -521,24 +521,13 @@ const RootQuery = new GraphQLObjectType({
           .catch((err) => err);
       },
     },
-    auditlog: {
-      type: AuditlogType,
-      args: { userid: { type: GraphQLString } },
-      resolve(parentValue, args) {
-        const query = `SELECT * FROM dbo_auditlog WHERE at_userid=$1`;
-        const values = [args.userid];
 
-        return db
-          .one(query, values)
-          .then((res) => res)
-          .catch((err) => err);
-      },
-    },
     allAuditlog: {
       type: new GraphQLList(AuditlogType),
       args: {},
       resolve(parentValue, args) {
-        const query = `SELECT * FROM dbo_auditlog order by at_date`;
+        const query = `SELECT * FROM dbo_auditlog order by al_date desc`;
+        const values = [];
 
         return db
           .many(query)

@@ -1,70 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useIsFetching } from '@tanstack/react-query';
 import currency from 'currency.js';
 import { nanoid } from 'nanoid';
 import { Controller, useForm } from 'react-hook-form';
-import { useCustomToast } from '../helpers/useCustomToast';
-import { formatPrice } from '../helpers/utils';
-import { FiSave } from 'react-icons/fi';
 import { ImExit } from 'react-icons/im';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import {
-  AspectRatio,
   Box,
   Button,
-  ButtonGroup,
-  Center,
-  Checkbox,
-  Container,
   Divider,
   Flex,
   FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   Grid,
   GridItem,
   Heading,
   HStack,
   IconButton,
-  Image,
   Input,
-  InputGroup,
-  InputLeftAddon,
-  InputLeftElement,
-  Radio,
-  RadioGroup,
-  SimpleGrid,
-  Stack,
-  StackDivider,
   Text,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
   VStack,
-  Wrap,
-  WrapItem,
-  useRadio,
-  useRadioGroup,
   useDisclosure,
-  useColorMode,
-  useColorModeValue,
-  useBreakpointValue,
 } from '@chakra-ui/react';
 import { Group, Modal, Select } from '@mantine/core';
 import { branch } from '../utils/constants';
 import { AlertDialogBox } from '../helpers/AlertDialogBox';
-import {
-  AddIcon,
-  EditIcon,
-  DeleteIcon,
-  SearchIcon,
-  LockIcon,
-  ExternalLinkIcon,
-} from '@chakra-ui/icons';
+import { SearchIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 import { TiArrowBack, TiPrinter } from 'react-icons/ti';
 import { IconTrash, IconLock } from '@tabler/icons-react';
 import { useRecoilState } from 'recoil';
@@ -78,7 +39,6 @@ import {
   editTranLotsIdState,
   editTranSerialIdState,
 } from '../data/atomdata';
-//import { usePurchases } from '../react-query/purchases/usePurchases';
 import { useItems } from '../react-query/items/useItems';
 import { useUpdateItem } from '../react-query/items/useUpdateItem';
 import { useItemsExpiry } from '../react-query/itemsexpiry/useItemsExpiry';
@@ -88,7 +48,6 @@ import { useUpdateItemSerial } from '../react-query/itemsserial/useUpdateItemSer
 import { useTrans } from '../react-query/trans/useTrans';
 import { useAddTran } from '../react-query/trans/useAddTran';
 import { useUpdateTran } from '../react-query/trans/useUpdateTran';
-//import { useDeletePurchase } from '../react-query/purchases/useDeletePurchase';
 import { useTransDetls } from '../react-query/transdetls/useTranDetls';
 import { useAddTranDetls } from '../react-query/transdetls/useAddTranDetls';
 import { useDeleteTranDetls } from '../react-query/transdetls/useDeleteTranDetls';
@@ -98,46 +57,16 @@ import { useDeleteTranLot } from '../react-query/translots/useDeleteTranLot';
 import { useTranSerial } from '../react-query/transserial/useTranSerial';
 import { useAddTranSerial } from '../react-query/transserial/useAddTranSerial';
 import { useDeleteTranSerial } from '../react-query/transserial/useDeleteTranSerial';
-import { useSuppliers } from '../react-query/suppliers/useSuppliers';
 import { useDocumentNo } from '../react-query/documentno/useDocumentNo';
 import { useUpdateDocumentno } from '../react-query/documentno/useUpdateDocumentno';
-//import { useAddPayable } from '../react-query/payable/useAddPayable';
 import { useAddItemsHistory } from '../react-query/itemshistory/useAddItemsHistory';
 import { useAddAuditlog } from '../react-query/auditlog/useAddAuditlog';
 import GetLocalUser from '../helpers/GetLocalUser';
 import CustomerSearchTable from './CustomerSearchTable';
 import TranSalesDetlsForm from './TranSalesDetlsForm';
-//import TranDetlsServForm from './PurchaseDetlsServForm';
 import TranSalesDetlsTable from './TranSalesDetlsTable';
-import { useGroups } from '../react-query/groups/useGroups';
 import { useAddGroup } from '../react-query/groups/useAddGroup';
 import GroupForm from './GroupForm';
-//import StktakeSearchTable from "./StktakeSearchTable";
-//import PurchaseDetlsServTable from './PurchaseDetlsServTable';
-
-/* const initial_ap = {
-  ap_pono: '',
-  ap_podate: null,
-  ap_invno: '',
-  ap_invdate: null,
-  ap_recdate: null,
-  ap_suppno: '',
-  ap_supplier: '',
-  ap_type: '',
-  ap_subtotal_amt: 0,
-  ap_nettotal_amt: 0,
-  ap_paid_amt: 0,
-  ap_disc_amt: 0,
-  ap_disc_taken: 0,
-  ap_dc: '',
-  ap_acc: '',
-  ap_disc_acc: '',
-  ap_paid: false,
-  ap_balance: 0,
-  ap_branch: branch,
-  ap_glcode: '',
-  ap_paid_disc: 0,
-}; */
 
 const initial_batchdetls = {
   tl_tranno: '',
@@ -166,24 +95,6 @@ const initial_batchdetls = {
   tl_post: '0',
   tl_trandate: null,
   tl_trackserial: false,
-};
-
-const initial_batchlot = {
-  tl_id: '',
-  tl_tranno: '',
-  tl_type: 'Item',
-  tl_itemno: '',
-  tl_lotno: '',
-  tl_datereceived: null,
-  tl_location: '',
-  tl_dateexpiry: null,
-  tl_pono: '',
-  tl_podate: null,
-  tl_qtyonhand: 0,
-  tl_qtyreceived: 0,
-  tl_ucost: 0,
-  tl_post: '0',
-  tl_qty: 0,
 };
 
 const initial_it = {
@@ -215,16 +126,11 @@ const initial_group = {
 const TranSalesForm = () => {
   const isFetching = useIsFetching();
   const navigate = useNavigate();
-  const field_width = '150';
   const field_gap = '3';
-  const { documentno } = useDocumentNo();
-  const updateDocumentno = useUpdateDocumentno();
   const { items } = useItems();
   const updateItem = useUpdateItem();
   const { itemsexpiry, setItemExpId } = useItemsExpiry();
   const updateItemExpiry = useUpdateItemExpiry();
-  const { itemsserial, setItemSerialId } = useItemsSerial();
-  const updateItemSerial = useUpdateItemSerial();
   const addGroup = useAddGroup();
   const [grouptype, setGrouptype] = useState('');
   const [groupstatustype, setGroupStatusType] = useState('');
@@ -235,8 +141,6 @@ const TranSalesForm = () => {
   const deleteTranDetls = useDeleteTranDetls();
   const addTranLot = useAddTranLot();
   const deleteTranLot = useDeleteTranLot();
-  const addTranSerial = useAddTranSerial();
-  const deleteTranSerial = useDeleteTranSerial();
   const addItemsHistory = useAddItemsHistory();
   const { transactions } = useTrans();
   const { transdetls } = useTransDetls();
@@ -249,8 +153,6 @@ const TranSalesForm = () => {
   const localuser = GetLocalUser();
   const [isCalc, setIsCalc] = useState(false);
 
-  //const [filterText, setFilterText] = React.useState('');
-  const [doctype, setDocType] = useState('Purchase');
   const [batch, setBatch] = useRecoilState(tranState);
   const [batchdetls, setBatchdetls] = useRecoilState(trandetlsState);
   const [batchlots, setBatchlots] = useRecoilState(tranlotsState);
@@ -260,23 +162,11 @@ const TranSalesForm = () => {
     useRecoilState(editTranDetlsIdState);
   const [editBatchlotsId, setEditBatchlotsId] =
     useRecoilState(editTranLotsIdState);
-  const [editBatchserialId, setEditBatchSerialId] = useRecoilState(
-    editTranSerialIdState
-  );
   const [doclayout, setDocLayout] = useState(editBatchId.layout);
   const [tranno, setTranno] = useState(batch.t_no);
   const [totamt, setTotAmt] = useState(batch.t_subtotal);
   const [totdisc, setTotDisc] = useState(batch.t_disc);
   const [lock, setLock] = useState(batch.t_post);
-
-  //console.log('batch', batch);
-  //console.log('batch detls', batchdetls);
-  //console.log('batch lots', batchlots);
-  //console.log('batch serial', batchserial);
-  //console.log('edit batch', editBatchId);
-  //console.log('doc', documentno);
-  console.log('transdetls', transdetls);
-  console.log('translot', translots);
 
   const {
     isOpen: isAlertDeleteOpen,
@@ -309,19 +199,11 @@ const TranSalesForm = () => {
   } = useDisclosure();
 
   const {
-    isOpen: isStktakeSearchOpen,
-    onOpen: onStktakeSearchOpen,
-    onClose: onStktakeSearchClose,
-  } = useDisclosure();
-
-  const {
     handleSubmit,
-    register,
     control,
-    reset,
     setValue,
     getValues,
-    formState: { errors, isSubmitting, id },
+    formState: {},
   } = useForm({
     defaultValues: {
       ...batch,
@@ -332,8 +214,7 @@ const TranSalesForm = () => {
     console.log('add batch', data);
     const { t_no, t_type } = data;
     addTran(data);
-    // delete old details
-    //deleteSamplesBatchDetls({ sbd_batchno: sb_batchno });
+
     //add details
     batchdetls.forEach(rec => {
       const { tl_id, ...fields } = rec;
@@ -362,8 +243,6 @@ const TranSalesForm = () => {
         deleteTranLot(rec);
       });
 
-    // delete old details
-    //deleteTranDetls({ tl_tranno: t_no });
     // update header
     updateTran(data);
     //add details
@@ -394,7 +273,7 @@ const TranSalesForm = () => {
   };
 
   const update_CustDetls = data => {
-    const { c_custno, c_cust, c_area, c_add1, c_add2, c_add3, c_add4 } = data;
+    const { c_custno, c_cust, c_add1, c_add2, c_add3, c_add4 } = data;
     setBatch(
       prev =>
         (prev = {
@@ -411,69 +290,6 @@ const TranSalesForm = () => {
     setValue('t_sc', c_cust);
   };
 
-  /* const update_SuppDetls = data => {
-    console.log('suppdata', data);
-    const { s_suppno, s_supp, s_add1, s_add2, s_add3, s_add4 } = data;
-    setBatch(
-      prev =>
-        (prev = {
-          ...batch,
-          t_scno: s_suppno,
-          t_sc: s_supp,
-          t_add1: s_add1,
-          t_add2: s_add2,
-          t_add3: s_add3,
-          t_add4: s_add4,
-        })
-    );
-    setValue('t_scno', s_suppno);
-    setValue('t_sc', s_supp);
-    setValue('t_add1', s_add1);
-    setValue('t_add2', s_add2);
-    setValue('t_add3', s_add3);
-    setValue('t_add4', s_add4);
-  }; */
-
-  /* const handleSearchSupp = data => {
-    const result = suppliers.filter(r => r.s_suppno === data);
-    update_SuppDetls(...result);
-  }; */
-
-  /* const handleStktakeSearch = () => {
-    onStktakeSearchOpen();
-  }; */
-
-  /* const update_StktakeDetls = (data) => {
-    console.log("stktake", data);
-    const { st_batchno } = data;
-    const newData = stktakedetls
-      .filter((r) => r.std_batchno === st_batchno)
-      .map((rec) => {
-        const itemno = rec.std_itemno;
-        const itemrec = items.filter((r) => r.item_no === itemno);
-        return {
-          ...initial_batchdetls,
-          tl_tranno: editBatchId.no,
-          tl_type: "item",
-          tl_itemno: rec.std_itemno,
-          tl_desp: itemrec[0].item_desp,
-          tl_ucost: itemrec[0].item_cost,
-          tl_netucost: itemrec[0].item_cost,
-          tl_qty: rec.std_qty,
-          tl_trackexpiry: itemrec[0].item_trackexpiry,
-          tl_unit: itemrec[0].item_unit,
-          tl_excost: Math.round(rec.std_qty * itemrec[0].item_cost),
-        };
-      });
-    var oldData = [];
-    if (batchdetls.length > 0) {
-      oldData = batchdetls;
-    }
-    console.log("import", oldData, newData);
-    setBatchdetls([...oldData, ...newData]);
-    setIsCalc(true);
-  }; */
-
   const handlePost = () => {
     var doctype = '';
     var qtyonhand = 0;
@@ -485,35 +301,6 @@ const TranSalesForm = () => {
     const newData = { ...data, t_post: '1' };
     onSubmit(newData);
 
-    // console.log('post batchlots', batchlots);
-
-    /*  const ap = {
-      ...initial_ap,
-      ap_pono: data.po_no,
-      ap_podate: data.po_date,
-      ap_invno: data.po_invno,
-      ap_invdate: data.po_invdate,
-      ap_suppno: data.po_suppno,
-      ap_supplier: data.po_supp,
-      ap_type: data.po_type,
-      ap_subtotal_amt: data.po_subtotal,
-      ap_nettotal_amt: data.po_nettotal,
-      ap_disc_amt: data.po_disc,
-      ap_balance: data.po_nettotal,
-    };
-    addPayable(ap); */
-
-    /*  switch (trantype) {
-      case 'Purchase':
-        doctype = 'Purchase';
-        break;
-      case 'Despatch':
-        doctype = 'Despatch';
-        break;
-
-      default:
-        break;
-    } */
     if (data.t_layout === 'Item' && batchdetls.length > 0) {
       batchdetls.forEach(rec => {
         // get itemonhand details
@@ -570,8 +357,6 @@ const TranSalesForm = () => {
             item_suppno: suppno,
             item_supplier: supp,
           };
-          //console.log('Sales item update', newData);
-          //console.log('Sales onhandrec', itemonhandrec);
           updateItem(newData);
         }
       });
@@ -638,9 +423,6 @@ const TranSalesForm = () => {
       update_Batch(newData);
     }
     if (status === 'add') {
-      // const { doc_purchase, doc_despatch, doc_abbre } = documentno[0] || 0;
-
-      // const docno = doc_despatch;
       const docabbre = 'INV';
       const year = dayjs().year().toString().substring(2);
 
@@ -662,11 +444,6 @@ const TranSalesForm = () => {
         nexttranno = 10000001;
       }
 
-      // const newno = docno + 1;
-      // const newstrno = (10000000 + newno).toString().substring(1);
-      // const year = dayjs().year().toString().substring(2);
-      // const newdocno = docabbre + year + newstrno + doc_abbre;
-      // updateDocumentno({ ...documentno[0], doc_despatch: newno });
       console.log('nexttranno', nexttranno);
       const newdocno = docabbre + year + nexttranno.toString().substring(1);
       const newdata = { ...values, t_no: newdocno };
@@ -710,7 +487,6 @@ const TranSalesForm = () => {
       prev =>
         (prev = { id: original.tl_id, no: original.tl_itemno, type: 'edit' })
     );
-    //setStatusType(prev => (prev = 'edit'));
     setSingleBatchDetlsState(prev => original);
     setSingleBatchLotsState(prev => [...lotdata]);
     setSingleBatchSerialState(prev => [...serialdata]);
@@ -729,7 +505,6 @@ const TranSalesForm = () => {
   };
 
   const handleAddBatchDetls = () => {
-    //setStatusType(prev => (prev = 'add'));
     const doctype = getValues('t_type');
     setEditBatchdetlsId(prev => (prev = { id: '', no: '', type: 'add' }));
     const data = {
@@ -740,13 +515,7 @@ const TranSalesForm = () => {
       tl_trantype: doctype,
     };
     setSingleBatchDetlsState(data);
-    /*  const lotdata = {
-      ...initial_batchlot,
-      tl_id: nanoid(),
-      tl_tranno: editBatchId.no,
-      tl_type: 'Item',
-    };
-    setSingleBatchLotsState(lotdata); */
+
     setSingleBatchLotsState(
       prev => (prev = translots.filter(r => r.tl_tranno === ''))
     );
@@ -765,7 +534,7 @@ const TranSalesForm = () => {
     console.log('adddata', dataUpdate);
     const oldData = batchdetls;
     const newData = [...oldData, dataUpdate];
-    //   console.log('newdata', newData);
+
     setBatchdetls(newData);
     setIsCalc(true);
   };
@@ -781,15 +550,10 @@ const TranSalesForm = () => {
   const add_BatchLots = data => {
     console.log('adddata lot data', data);
     const newData = [...batchlots, ...data];
-    //   console.log('newdata', newData);
     setBatchlots(newData);
-    //setIsCalc(true);
   };
 
   const update_BatchLots = data => {
-    console.log('editdata lot', data);
-    //const dataUpdate = { ...data };
-    //console.log('editdata lot', dataUpdate);
     const oldData = batchlots
       .filter(r => r.tl_itemno !== editBatchdetlsId.no)
       .map(rec => {
@@ -797,7 +561,6 @@ const TranSalesForm = () => {
       });
     console.log('editdata lot olddata', oldData);
     setBatchlots([...oldData, ...data]);
-    //setIsCalc(true);
   };
 
   const handleOnDelBatchDetlsConfirm = () => {
@@ -809,24 +572,10 @@ const TranSalesForm = () => {
       .map(rec => {
         return { ...rec };
       });
-    const newSerialData = batchserial
-      .filter(r => r.ts_itemno !== no)
-      .map(rec => {
-        return { ...rec };
-      });
-    console.log('delete', newData);
+
     setBatchdetls([...newData]);
     setBatchlots([...newLotData]);
-    setBatchSerial([...newSerialData]);
-    setIsCalc(true);
-  };
 
-  const handleOnDelBatchLotsConfirm = () => {
-    //console.log("deldata", data)
-    const { id } = editBatchlotsId;
-    const newData = batchlots.filter(r => r.tl_id !== id);
-    console.log('delete', newData);
-    setBatchlots([...newData]);
     setIsCalc(true);
   };
 
@@ -857,14 +606,6 @@ const TranSalesForm = () => {
     onGroupClose();
   };
 
-  const handleAddGroup = grouptype => {
-    setGrouptype(grouptype);
-    setGroupStatusType(prev => (prev = 'add'));
-    const data = { ...initial_group };
-    setGroupState(data);
-    onGroupOpen();
-  };
-
   useEffect(() => {
     handleCalc();
     setIsCalc(false);
@@ -885,7 +626,6 @@ const TranSalesForm = () => {
         //align="left"
         //alignItems="flex-start"
       >
-        {/* <form onSubmit={handleSubmit(onSubmit)}> */}
         <form>
           <HStack py={2} spacing="3">
             <Grid templateColumns={'repeat(12,1fr)'} columnGap={3}>
@@ -907,10 +647,7 @@ const TranSalesForm = () => {
                 </VStack>
               </GridItem>
               <GridItem colSpan={3}></GridItem>
-              {/* <GridItem colSpan={1}>
-                {lock === '1' && <IconLock size={42} color="red" />}
-                {lock === 'D' && <IconTrash size={42} color="red" />}
-              </GridItem> */}
+
               <GridItem colSpan={5}>
                 <Flex>
                   <HStack mr={0} align="flex-end">
@@ -937,7 +674,7 @@ const TranSalesForm = () => {
                         variant="outline"
                         size="lg"
                         onClick={handlePrint}
-                        isDisabled={isFetching}
+                        isDisabled={editBatchId.status === 'add' || isFetching}
                       >
                         Print
                       </Button>
@@ -1002,7 +739,6 @@ const TranSalesForm = () => {
                               width="full"
                               onChange={onChange}
                               borderColor="gray.400"
-                              //textTransform="capitalize"
                               ref={ref}
                               placeholder="customer no"
                               minWidth="100"
@@ -1038,7 +774,6 @@ const TranSalesForm = () => {
                             width="full"
                             onChange={onChange}
                             borderColor="gray.400"
-                            //textTransform="capitalize"
                             ref={ref}
                             placeholder="customer"
                             minWidth="100"
@@ -1065,7 +800,6 @@ const TranSalesForm = () => {
                             width="full"
                             onChange={onChange}
                             borderColor="gray.400"
-                            //textTransform="capitalize"
                             ref={ref}
                             placeholder="remark"
                             minWidth="100"
@@ -1092,7 +826,6 @@ const TranSalesForm = () => {
                             width="full"
                             onChange={onChange}
                             borderColor="gray.400"
-                            //textTransform="capitalize"
                             ref={ref}
                             placeholder="sub total amount"
                             minWidth="100"
@@ -1125,7 +858,6 @@ const TranSalesForm = () => {
                               );
                             }}
                             borderColor="gray.400"
-                            //textTransform="capitalize"
                             ref={ref}
                             placeholder="total discount"
                             minWidth="100"
@@ -1152,7 +884,6 @@ const TranSalesForm = () => {
                             width="full"
                             onChange={onChange}
                             borderColor="gray.400"
-                            //textTransform="capitalize"
                             ref={ref}
                             placeholder="total amount"
                             minWidth="100"
@@ -1185,7 +916,6 @@ const TranSalesForm = () => {
                             width="full"
                             onChange={onChange}
                             borderColor="gray.400"
-                            //textTransform="capitalize"
                             ref={ref}
                             placeholder="invoice no"
                             minWidth="100"
@@ -1215,7 +945,6 @@ const TranSalesForm = () => {
                             width="full"
                             onChange={onChange}
                             borderColor="gray.400"
-                            //textTransform="capitalize"
                             ref={ref}
                             placeholder="invoice date"
                             minWidth="100"
@@ -1236,26 +965,13 @@ const TranSalesForm = () => {
                           <Text as="b" fontSize="sm" textAlign="left">
                             Type
                           </Text>
-                          {/*  <Input
-                            name="t_type"
-                            value={value || ""}
-                            width="full"
-                            onChange={onChange}
-                            borderColor="gray.400"
-                            //textTransform="capitalize"
-                            ref={ref}
-                            placeholder="type"
-                            minWidth="100"
-                            readOnly
-                          /> */}
+
                           <Select
                             name="t_type"
                             value={value || ''}
                             width="full"
                             size="md"
                             onChange={onChange}
-                            //borderColor="gray.400"
-                            //textTransform="capitalize"
                             ref={ref}
                             data={[
                               { value: 'Sales', label: 'Sales' },
@@ -1292,7 +1008,6 @@ const TranSalesForm = () => {
                               setTranno(e.target.value);
                             }}
                             borderColor="gray.400"
-                            //textTransform="capitalize"
                             ref={ref}
                             placeholder="delivery no"
                             minWidth="100"
@@ -1320,7 +1035,6 @@ const TranSalesForm = () => {
                             width="full"
                             onChange={onChange}
                             borderColor="gray.400"
-                            //textTransform="capitalize"
                             ref={ref}
                             placeholder="delivery date"
                             minWidth="100"
@@ -1348,7 +1062,6 @@ const TranSalesForm = () => {
                             width="full"
                             onChange={onChange}
                             borderColor="gray.400"
-                            //textTransform="capitalize"
                             ref={ref}
                             placeholder="received date"
                             minWidth="100"
@@ -1375,7 +1088,6 @@ const TranSalesForm = () => {
                             width="full"
                             onChange={onChange}
                             borderColor="gray.400"
-                            //textTransform="capitalize"
                             ref={ref}
                             placeholder="term"
                             minWidth="100"
@@ -1411,10 +1123,7 @@ const TranSalesForm = () => {
                               );
                               setDocLayout(prev => (prev = e.target.value));
                             }}
-                            //borderColor="gray.400"
-                            //textTransform="capitalize"
                             ref={ref}
-                            //placeholder="category"
                             data={[
                               { value: 'Item', label: 'Item' },
                               { value: 'Service', label: 'Service' },
@@ -1431,18 +1140,6 @@ const TranSalesForm = () => {
             <GridItem colSpan={12} w={'100%'}>
               <Divider borderWidth={1} borderColor="teal" />
             </GridItem>
-            {/* 
-            {doclayout === 'Service' && (
-              <GridItem colSpan={12}>
-                <PurchaseDetlsServTable
-                  batchdetlsstate={batchdetls}
-                  setBatchDetlsState={setBatchdetls}
-                  handleAddBatchDetls={handleAddBatchDetls}
-                  handleEditBatchDetls={handleEditBatchDetls}
-                  handleDeleteBatchDetls={handleDeleteBatchDetls}
-                />
-              </GridItem>
-            )} */}
 
             {doclayout !== 'Service' && (
               <GridItem colSpan={12}>
@@ -1479,37 +1176,10 @@ const TranSalesForm = () => {
           onItemClose={onBatchDetlsClose}
         />
       </Modal>
-      {/*  <Modal
-        closeOnOverlayClick={false}
-        isOpen={isBatchDetlsServOpen}
-        onClose={onBatchDetlsServClose}
-        size="4xl"
-      >
-        <ModalOverlay />
-        <ModalContent>
-          
-          <ModalCloseButton />
-          <ModalBody>
-            <PurchaseDetlsServForm
-              state={singlebatchdetlsstate}
-              setState={setSingleBatchDetlsState}
-              add_Item={add_BatchDetls}
-              update_Item={update_BatchDetls}
-              statustype={statustype}
-              onItemClose={onBatchDetlsServClose}
-            />
-          </ModalBody>
 
-        </ModalContent>
-      </Modal> */}
       <Modal opened={isSearchOpen} onClose={onSearchClose} size="4xl">
         <CustomerSearchTable
-          //state={state}
-          //setState={setState}
-          //add_Item={add_InvDetls}
           update_Item={update_CustDetls}
-          //statustype={statustype}
-          //setStatusType={setStatusType}
           onCustomerSearchClose={onSearchClose}
         />
       </Modal>
